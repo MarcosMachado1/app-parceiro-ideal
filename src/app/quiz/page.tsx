@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, ReactNode } from 'react'
 import { ArrowLeft, ArrowRight, Heart, Star, CheckCircle, AlertCircle } from 'lucide-react'
 
 // Interface para as respostas
@@ -142,7 +142,7 @@ const questions: Question[] = [
 interface ResultData {
   score: number
   category: string
-  icon: JSX.Element
+  icon: ReactNode
 }
 
 export default function Quiz() {
@@ -197,7 +197,7 @@ export default function Quiz() {
     const finalScore = Math.max(0, Math.min(100, Math.round((score / maxPossibleScore) * 100)))
 
     let category = ''
-    let icon: JSX.Element
+    let icon: ReactNode
     
     if (finalScore >= 80) {
       category = 'Saudável'
