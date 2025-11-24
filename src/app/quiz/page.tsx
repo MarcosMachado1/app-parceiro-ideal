@@ -1,9 +1,26 @@
 'use client'
 
 import { useState } from 'react'
-import { ArrowLeft, ArrowRight, Heart } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Heart, Star, CheckCircle, AlertCircle } from 'lucide-react'
 
-const questions = [
+// Definindo as interfaces
+interface Answer {
+  [key: string]: string | number | string[] | undefined
+  score?: number
+  category?: string
+}
+
+interface Question {
+  id: number
+  type: 'select' | 'number' | 'range' | 'multiselect' | 'text'
+  question: string
+  options?: string[]
+  min?: number
+  max?: number
+  key: string
+}
+
+const questions: Question[] = [
   {
     id: 1,
     type: 'select',
@@ -121,7 +138,7 @@ const questions = [
 
 export default function Quiz() {
   const [currentQuestion, setCurrentQuestion] = useState(0)
-  const [answers, setAnswers] = useState({})
+  const [answers, setAnswers] = useState<Answer>({})
   const [showResult, setShowResult] = useState(false)
 
   const handleAnswer = (key: string, value: string | number | string[]) => {
@@ -143,21 +160,22 @@ export default function Quiz() {
   }
 
   const calculateResult = () => {
-    // Cálculo simples do score baseado nas respostas numéricas
     const numericKeys = ['satisfacao', 'comunicacao', 'intimidade', 'confianca', 'tempo_qualidade', 'suporte', 'valores', 'vida_social', 'metas']
     let score = 0
     let count = 0
 
     numericKeys.forEach(key => {
-      if (answers[key]) {
-        score += parseInt(answers[key])
+      const value = answers[key]
+      if (value !== undefined && value !== '') {
+        score += parseInt(value as string)
         count++
       }
     })
 
     // Penalizar conflitos
-    if (answers.conflitos) {
-      score -= answers.conflitos.length * 2
+    const conflitos = answers.conflitos as string[]
+    if (conflitos && Array.isArray(conflitos)) {
+      score -= conflitos.length * 2
     }
 
     // Bonus para planos alinhados
@@ -165,55 +183,114 @@ export default function Quiz() {
     else if (answers.planos === 'Parcialmente') score += 5
 
     // Normalizar para 0-100
-    const finalScore = Math.max(0, Math.min(100, Math.round((score / (count * 10 + 15)) * 100)))
+    const maxPossibleScore = count * 10 + 15
+    const finalScore = Math.max(0, Math.min(100, Math.round((score / maxPossibleScore) * 100)))
 
     let category = ''
-    if (finalScore >= 80) category = 'Saudável'
-    else if (finalScore >= 50) category = 'Em risco'
-    else category = 'Precisa de ajuda'
+    let description = ''
+    let icon = <Heart className="w-16 h-16 text-pink-500 mx-auto mb-4" />
+    
+    if (finalScore >= 80) {
+      category = 'Saudável'
+      description = 'Seu relacionamento está em ótimo estado! Continue cultivando o amor e a comunicação.'
+      icon = <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+    } else if (finalScore >= 50) {
+      category = 'Em risco'
+      description = 'Seu relacionamento precisa de atenção em algumas áreas. Há espaço para melhorias.'
+      icon = <AlertCircle className="w-16 h-16 text-yellow-500 mx-auto mb-4" />
+    } else {
+      category = 'Precisa de ajuda'
+      description = 'Seu relacionamento está passando por dificuldades. É importante buscar ajuda e diálogo.'
+      icon = <Heart className="w-16 h-16 text-red-500 mx-auto mb-4" />
+    }
 
     setAnswers(prev => ({ ...prev, score: finalScore, category }))
     setShowResult(true)
   }
 
+  const getScoreColor = (score: number) => {
+    if (score >= 80) return 'text-green-500'
+    if (score >= 50) return 'text-yellow-500'
+    return 'text-red-500'
+  }
+
+  const getProgressColor = (score: number) => {
+    if (score >= 80) return 'bg-green-500'
+    if (score >= 50) return 'bg-yellow-500'
+    return 'bg-red-500'
+  }
+
   if (showResult) {
+    const score = answers.score as number
+    const category = answers.category as string
+
     return (
       <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50 flex items-center justify-center p-4">
         <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center">
-          <Heart className="w-16 h-16 text-pink-500 mx-auto mb-4" />
+          {icon}
           <h1 className="text-3xl font-bold text-gray-800 mb-4">Seu Resultado</h1>
           
           <div className="mb-6">
-            <div className="text-6xl font-bold text-pink-500 mb-2">{answers.score}</div>
-            <div className="text-xl font-semibold text-gray-700 mb-2">{answers.category}</div>
+            <div className={`text-6xl font-bold mb-2 ${getScoreColor(score)}`}>
+              {score}
+            </div>
+            <div className="text-xl font-semibold text-gray-700 mb-2">{category}</div>
             <div className="w-full bg-gray-200 rounded-full h-3 mb-4">
               <div 
-                className="bg-pink-500 h-3 rounded-full transition-all duration-500"
-                style={{ width: `${answers.score}%` }}
+                className={`h-3 rounded-full transition-all duration-500 ${getProgressColor(score)}`}
+                style={{ width: `${score}%` }}
               ></div>
             </div>
           </div>
 
-          <div className="text-left mb-6">
-            <h3 className="font-semibold mb-2">Resultado Básico Gratuito</h3>
-            <p className="text-sm text-gray-600 mb-4">
-              Seu relacionamento está na categoria <strong>{answers.category}</strong> com score de <strong>{answers.score}/100</strong>.
+          <div className="text-left mb-6 bg-gray-50 p-4 rounded-lg">
+            <h3 className="font-semibold mb-2 flex items-center gap-2">
+              <Star className="w-4 h-4 text-yellow-500" />
+              Resultado Básico Gratuito
+            </h3>
+            <p className="text-sm text-gray-600 mb-2">
+              {category === 'Saudável' 
+                ? '🎉 Parabéns! Seu relacionamento está muito bem!'
+                : category === 'Em risco'
+                ? '⚠️ Seu relacionamento precisa de atenção em algumas áreas.'
+                : '💔 Seu relacionamento está passando por dificuldades.'}
+            </p>
+            <p className="text-sm text-gray-600">
+              Score: <strong>{score}/100</strong> - Categoria: <strong>{category}</strong>
             </p>
           </div>
 
           <div className="border-t pt-6">
-            <h3 className="font-semibold mb-4">Quer o Relatório Completo?</h3>
-            <p className="text-sm text-gray-600 mb-4">
-              Análise detalhada, pontos fortes/fracos, 5 ações para melhorar e conselhos práticos.
-            </p>
+            <h3 className="font-semibold mb-4 text-lg">Quer o Relatório Completo?</h3>
+            <div className="space-y-3 mb-6 text-left">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-green-500" />
+                <span className="text-sm">Análise detalhada de cada área</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-green-500" />
+                <span className="text-sm">Pontos fortes e fracos identificados</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-green-500" />
+                <span className="text-sm">5 ações práticas para melhorar</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-green-500" />
+                <span className="text-sm">Conselhos personalizados</span>
+              </div>
+            </div>
             <a
               href="https://kiwify.com.br/parceiro-ideal"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+              className="inline-block w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-4 px-6 rounded-lg transition-all transform hover:scale-105 shadow-lg"
             >
               Comprar Relatório Completo - R$ 57
             </a>
+            <p className="text-xs text-gray-500 mt-3">
+              Pagamento seguro • 7 dias de garantia • Acesso imediato
+            </p>
           </div>
         </div>
       </div>
@@ -221,13 +298,27 @@ export default function Quiz() {
   }
 
   const question = questions[currentQuestion]
+  const currentAnswer = answers[question.key]
+
+  const isAnswerValid = () => {
+    if (!currentAnswer) return false
+    if (question.type === 'multiselect') {
+      return Array.isArray(currentAnswer) && currentAnswer.length > 0
+    }
+    if (question.type === 'number') {
+      return currentAnswer !== '' && Number(currentAnswer) >= (question.min || 0)
+    }
+    return true
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50 flex items-center justify-center p-4">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
         <div className="mb-6">
           <div className="flex justify-between items-center mb-4">
-            <span className="text-sm text-gray-500">Pergunta {currentQuestion + 1} de {questions.length}</span>
+            <span className="text-sm text-gray-500">
+              Pergunta {currentQuestion + 1} de {questions.length}
+            </span>
             <div className="w-20 bg-gray-200 rounded-full h-2">
               <div 
                 className="bg-pink-500 h-2 rounded-full transition-all duration-300"
@@ -235,18 +326,21 @@ export default function Quiz() {
               ></div>
             </div>
           </div>
-          <h2 className="text-xl font-semibold text-gray-800">{question.question}</h2>
+          <h2 className="text-xl font-semibold text-gray-800 mb-2">{question.question}</h2>
+          {question.type === 'range' && (
+            <p className="text-sm text-gray-600">Deslize para escolher de {question.min} a {question.max}</p>
+          )}
         </div>
 
         <div className="mb-8">
           {question.type === 'select' && (
             <select
-              value={answers[question.key] || ''}
+              value={currentAnswer as string || ''}
               onChange={(e) => handleAnswer(question.key, e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors"
             >
-              <option value="">Selecione...</option>
-              {question.options.map(option => (
+              <option value="">Selecione uma opção...</option>
+              {question.options?.map(option => (
                 <option key={option} value={option}>{option}</option>
               ))}
             </select>
@@ -258,13 +352,13 @@ export default function Quiz() {
                 type="range"
                 min={question.min}
                 max={question.max}
-                value={answers[question.key] || question.min}
+                value={currentAnswer as number || question.min}
                 onChange={(e) => handleAnswer(question.key, e.target.value)}
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
               />
               <div className="flex justify-between text-sm text-gray-500 mt-2">
                 <span>{question.min}</span>
-                <span className="font-semibold">{answers[question.key] || question.min}</span>
+                <span className="font-semibold text-pink-500">{currentAnswer as number || question.min}</span>
                 <span>{question.max}</span>
               </div>
             </div>
@@ -275,31 +369,31 @@ export default function Quiz() {
               type="number"
               min={question.min}
               max={question.max}
-              value={answers[question.key] || ''}
+              value={currentAnswer as string || ''}
               onChange={(e) => handleAnswer(question.key, e.target.value)}
-              placeholder="Digite o número..."
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+              placeholder={`Digite um número entre ${question.min} e ${question.max}`}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors"
             />
           )}
 
           {question.type === 'multiselect' && (
-            <div className="space-y-2">
-              {question.options.map(option => (
-                <label key={option} className="flex items-center">
+            <div className="space-y-3 max-h-60 overflow-y-auto">
+              {question.options?.map(option => (
+                <label key={option} className="flex items-center p-2 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors">
                   <input
                     type="checkbox"
-                    checked={answers[question.key]?.includes(option) || false}
+                    checked={(currentAnswer as string[] || []).includes(option)}
                     onChange={(e) => {
-                      const current = answers[question.key] || []
+                      const current = currentAnswer as string[] || []
                       if (e.target.checked) {
                         handleAnswer(question.key, [...current, option])
                       } else {
                         handleAnswer(question.key, current.filter(item => item !== option))
                       }
                     }}
-                    className="mr-2"
+                    className="mr-3 w-4 h-4 text-pink-500 focus:ring-pink-500"
                   />
-                  {option}
+                  <span className="text-gray-700">{option}</span>
                 </label>
               ))}
             </div>
@@ -307,28 +401,33 @@ export default function Quiz() {
 
           {question.type === 'text' && (
             <textarea
-              value={answers[question.key] || ''}
+              value={currentAnswer as string || ''}
               onChange={(e) => handleAnswer(question.key, e.target.value)}
               placeholder="Digite sua resposta..."
               rows={4}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors resize-none"
             />
           )}
         </div>
 
-        <div className="flex justify-between">
+        <div className="flex justify-between items-center">
           <button
             onClick={prevQuestion}
             disabled={currentQuestion === 0}
-            className="flex items-center gap-2 px-4 py-2 text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             Anterior
           </button>
+          
+          <div className="text-xs text-gray-500">
+            {!isAnswerValid() && 'Responda para continuar'}
+          </div>
+
           <button
             onClick={nextQuestion}
-            disabled={!answers[question.key] || (question.type === 'multiselect' && (!answers[question.key] || answers[question.key].length === 0))}
-            className="flex items-center gap-2 bg-pink-500 hover:bg-pink-600 disabled:bg-gray-300 text-white font-semibold py-2 px-4 rounded-lg transition-colors disabled:cursor-not-allowed"
+            disabled={!isAnswerValid()}
+            className="flex items-center gap-2 bg-pink-500 hover:bg-pink-600 disabled:bg-gray-300 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 disabled:cursor-not-allowed hover:shadow-lg"
           >
             {currentQuestion === questions.length - 1 ? 'Finalizar' : 'Próxima'}
             <ArrowRight className="w-4 h-4" />
