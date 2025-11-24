@@ -119,11 +119,16 @@ const questions = [
   }
 ]
 
+// Interface simples para evitar erros de TypeScript
+interface Answers {
+  [key: string]: any
+}
+
 export default function Quiz() {
   const [currentQuestion, setCurrentQuestion] = useState(0)
-  const [answers, setAnswers] = useState({})
+  const [answers, setAnswers] = useState<Answers>({})
   const [showResult, setShowResult] = useState(false)
-  const [resultData, setResultData] = useState(null)
+  const [resultData, setResultData] = useState<any>(null)
 
   const handleAnswer = (key: string, value: any) => {
     setAnswers(prev => ({ ...prev, [key]: value }))
