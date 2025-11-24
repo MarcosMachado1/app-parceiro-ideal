@@ -1,28 +1,9 @@
 'use client'
 
-import { useState, ReactNode } from 'react'
+import { useState } from 'react'
 import { ArrowLeft, ArrowRight, Heart, Star, CheckCircle, AlertCircle } from 'lucide-react'
 
-// Interface para as respostas
-interface AnswerType {
-  [key: string]: string | number | string[] | undefined
-  score?: number
-  category?: string
-}
-
-// Interface para as perguntas
-interface Question {
-  id: number
-  type: 'select' | 'number' | 'range' | 'multiselect' | 'text'
-  question: string
-  options?: string[]
-  min?: number
-  max?: number
-  key: string
-}
-
-// Array de perguntas
-const questions: Question[] = [
+const questions = [
   {
     id: 1,
     type: 'select',
@@ -138,20 +119,13 @@ const questions: Question[] = [
   }
 ]
 
-// Interface para os dados do resultado
-interface ResultData {
-  score: number
-  category: string
-  icon: ReactNode
-}
-
 export default function Quiz() {
   const [currentQuestion, setCurrentQuestion] = useState(0)
-  const [answers, setAnswers] = useState<AnswerType>({})
+  const [answers, setAnswers] = useState({})
   const [showResult, setShowResult] = useState(false)
-  const [resultData, setResultData] = useState<ResultData | null>(null)
+  const [resultData, setResultData] = useState(null)
 
-  const handleAnswer = (key: string, value: string | number | string[]) => {
+  const handleAnswer = (key: string, value: any) => {
     setAnswers(prev => ({ ...prev, [key]: value }))
   }
 
@@ -177,15 +151,14 @@ export default function Quiz() {
     numericKeys.forEach(key => {
       const value = answers[key]
       if (value !== undefined && value !== '') {
-        score += parseInt(value as string)
+        score += parseInt(value)
         count++
       }
     })
 
     // Penalizar conflitos
-    const conflitos = answers.conflitos as string[]
-    if (conflitos && Array.isArray(conflitos)) {
-      score -= conflitos.length * 2
+    if (answers.conflitos && Array.isArray(answers.conflitos)) {
+      score -= answers.conflitos.length * 2
     }
 
     // Bonus para planos alinhados
@@ -197,7 +170,7 @@ export default function Quiz() {
     const finalScore = Math.max(0, Math.min(100, Math.round((score / maxPossibleScore) * 100)))
 
     let category = ''
-    let icon: ReactNode
+    let icon
     
     if (finalScore >= 80) {
       category = 'Saudável'
@@ -345,7 +318,7 @@ export default function Quiz() {
         <div className="mb-8">
           {question.type === 'select' && (
             <select
-              value={currentAnswer as string || ''}
+              value={currentAnswer || ''}
               onChange={(e) => handleAnswer(question.key, e.target.value)}
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors"
             >
@@ -362,13 +335,13 @@ export default function Quiz() {
                 type="range"
                 min={question.min}
                 max={question.max}
-                value={currentAnswer as number || question.min}
+                value={currentAnswer || question.min}
                 onChange={(e) => handleAnswer(question.key, e.target.value)}
                 className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
               />
               <div className="flex justify-between text-sm text-gray-500 mt-2">
                 <span>{question.min}</span>
-                <span className="font-semibold text-pink-500">{currentAnswer as number || question.min}</span>
+                <span className="font-semibold text-pink-500">{currentAnswer || question.min}</span>
                 <span>{question.max}</span>
               </div>
             </div>
@@ -379,7 +352,7 @@ export default function Quiz() {
               type="number"
               min={question.min}
               max={question.max}
-              value={currentAnswer as string || ''}
+              value={currentAnswer || ''}
               onChange={(e) => handleAnswer(question.key, e.target.value)}
               placeholder={`Digite um número entre ${question.min} e ${question.max}`}
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors"
@@ -392,9 +365,9 @@ export default function Quiz() {
                 <label key={option} className="flex items-center p-2 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors">
                   <input
                     type="checkbox"
-                    checked={(currentAnswer as string[] || []).includes(option)}
+                    checked={(currentAnswer || []).includes(option)}
                     onChange={(e) => {
-                      const current = currentAnswer as string[] || []
+                      const current = currentAnswer || []
                       if (e.target.checked) {
                         handleAnswer(question.key, [...current, option])
                       } else {
@@ -411,7 +384,7 @@ export default function Quiz() {
 
           {question.type === 'text' && (
             <textarea
-              value={currentAnswer as string || ''}
+              value={currentAnswer || ''}
               onChange={(e) => handleAnswer(question.key, e.target.value)}
               placeholder="Digite sua resposta..."
               rows={4}
