@@ -125,8 +125,8 @@ export default function Quiz() {
   const [showResult, setShowResult] = useState(false)
   const [resultData, setResultData] = useState(null)
 
-  const handleAnswer = (key, value) => {
-    setAnswers(prev => ({ ...prev, [key]: value }))
+  const handleAnswer = (key: string, value: any) => {
+    setAnswers((prev: any) => ({ ...prev, [key]: value }))
   }
 
   const nextQuestion = () => {
@@ -149,30 +149,25 @@ export default function Quiz() {
     let count = 0
 
     numericKeys.forEach(key => {
-      // @ts-ignore
-      const value = answers[key]
+      const value = (answers as any)[key]
       if (value !== undefined && value !== '') {
         score += parseInt(value)
         count++
       }
     })
 
-    // @ts-ignore
-    if (answers.conflitos && Array.isArray(answers.conflitos)) {
-      // @ts-ignore
-      score -= answers.conflitos.length * 2
+    if ((answers as any).conflitos && Array.isArray((answers as any).conflitos)) {
+      score -= (answers as any).conflitos.length * 2
     }
 
-    // @ts-ignore
-    if (answers.planos === 'Sim') score += 10
-    // @ts-ignore
-    else if (answers.planos === 'Parcialmente') score += 5
+    if ((answers as any).planos === 'Sim') score += 10
+    else if ((answers as any).planos === 'Parcialmente') score += 5
 
     const maxPossibleScore = count * 10 + 15
     const finalScore = Math.max(0, Math.min(100, Math.round((score / maxPossibleScore) * 100)))
 
     let category = ''
-    let icon
+    let icon: any
     
     if (finalScore >= 80) {
       category = 'Saudável'
@@ -193,13 +188,13 @@ export default function Quiz() {
     setShowResult(true)
   }
 
-  const getScoreColor = (score) => {
+  const getScoreColor = (score: number) => {
     if (score >= 80) return 'text-green-500'
     if (score >= 50) return 'text-yellow-500'
     return 'text-red-500'
   }
 
-  const getProgressColor = (score) => {
+  const getProgressColor = (score: number) => {
     if (score >= 80) return 'bg-green-500'
     if (score >= 50) return 'bg-yellow-500'
     return 'bg-red-500'
@@ -207,8 +202,7 @@ export default function Quiz() {
 
   const isAnswerValid = () => {
     const question = questions[currentQuestion]
-    // @ts-ignore
-    const currentAnswer = answers[question.key]
+    const currentAnswer = (answers as any)[question.key]
     
     if (!currentAnswer) return false
     if (question.type === 'multiselect') {
@@ -221,8 +215,7 @@ export default function Quiz() {
   }
 
   if (showResult && resultData) {
-    // @ts-ignore
-    const { score, category, icon } = resultData
+    const { score, category, icon } = resultData as any
 
     return (
       <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50 flex items-center justify-center p-4">
@@ -296,8 +289,7 @@ export default function Quiz() {
   }
 
   const question = questions[currentQuestion]
-  // @ts-ignore
-  const currentAnswer = answers[question.key]
+  const currentAnswer = (answers as any)[question.key]
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50 flex items-center justify-center p-4">
@@ -376,7 +368,7 @@ export default function Quiz() {
                       if (e.target.checked) {
                         handleAnswer(question.key, [...current, option])
                       } else {
-                        handleAnswer(question.key, current.filter(item => item !== option))
+                        handleAnswer(question.key, current.filter((item: string) => item !== option))
                       }
                     }}
                     className="mr-3 w-4 h-4 text-pink-500 focus:ring-pink-500"
