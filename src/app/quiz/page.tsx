@@ -117,20 +117,20 @@ const questions = [
     question: 'O que você mais valoriza no seu parceiro?',
     key: 'valoriza'
   }
-]
+] as const
 
-// Interface simples para evitar erros de TypeScript
+// Interface para tipagem simples
 interface Answers {
-  [key: string]: any
+  [key: string]: string | number | string[] | undefined
 }
 
 export default function Quiz() {
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState<Answers>({})
   const [showResult, setShowResult] = useState(false)
-  const [resultData, setResultData] = useState<any>(null)
+  const [resultData, setResultData] = useState<{score: number; category: string; icon: JSX.Element} | null>(null)
 
-  const handleAnswer = (key: string, value: any) => {
+  const handleAnswer = (key: string, value: string | number | string[]) => {
     setAnswers(prev => ({ ...prev, [key]: value }))
   }
 
@@ -156,14 +156,15 @@ export default function Quiz() {
     numericKeys.forEach(key => {
       const value = answers[key]
       if (value !== undefined && value !== '') {
-        score += parseInt(value)
+        score += parseInt(value as string)
         count++
       }
     })
 
     // Penalizar conflitos
-    if (answers.conflitos && Array.isArray(answers.conflitos)) {
-      score -= answers.conflitos.length * 2
+    const conflitos = answers.conflitos as string[]
+    if (conflitos && Array.isArray(conflitos)) {
+      score -= conflitos.length * 2
     }
 
     // Bonus para planos alinhados
@@ -175,7 +176,7 @@ export default function Quiz() {
     const finalScore = Math.max(0, Math.min(100, Math.round((score / maxPossibleScore) * 100)))
 
     let category = ''
-    let icon
+    let icon: JSX.Element
     
     if (finalScore >= 80) {
       category = 'Saudável'
@@ -323,7 +324,7 @@ export default function Quiz() {
         <div className="mb-8">
           {question.type === 'select' && (
             <select
-              value={currentAnswer || ''}
+              value={currentAnswer as string || ''}
               onChange={(e) => handleAnswer(question.key, e.target.value)}
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors"
             >
@@ -340,13 +341,13 @@ export default function Quiz() {
                 type="range"
                 min={question.min}
                 max={question.max}
-                value={currentAnswer || question.min}
+                value={currentAnswer as number || question.min}
                 onChange={(e) => handleAnswer(question.key, e.target.value)}
                 className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
               />
               <div className="flex justify-between text-sm text-gray-500 mt-2">
                 <span>{question.min}</span>
-                <span className="font-semibold text-pink-500">{currentAnswer || question.min}</span>
+                <span className="font-semibold text-pink-500">{currentAnswer as number || question.min}</span>
                 <span>{question.max}</span>
               </div>
             </div>
@@ -357,7 +358,7 @@ export default function Quiz() {
               type="number"
               min={question.min}
               max={question.max}
-              value={currentAnswer || ''}
+              value={currentAnswer as string || ''}
               onChange={(e) => handleAnswer(question.key, e.target.value)}
               placeholder={`Digite um número entre ${question.min} e ${question.max}`}
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors"
@@ -370,13 +371,13 @@ export default function Quiz() {
                 <label key={option} className="flex items-center p-2 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors">
                   <input
                     type="checkbox"
-                    checked={(currentAnswer || []).includes(option)}
+                    checked={(currentAnswer as string[] || []).includes(option)}
                     onChange={(e) => {
-                      const current = currentAnswer || []
+                      const current = currentAnswer as string[] || []
                       if (e.target.checked) {
                         handleAnswer(question.key, [...current, option])
                       } else {
-                        handleAnswer(question.key, current.filter(item => item !== option))
+                        handleAnswer(question.key, current.filter((item: string) => item !== option))
                       }
                     }}
                     className="mr-3 w-4 h-4 text-pink-500 focus:ring-pink-500"
@@ -389,7 +390,7 @@ export default function Quiz() {
 
           {question.type === 'text' && (
             <textarea
-              value={currentAnswer || ''}
+              value={currentAnswer as string || ''}
               onChange={(e) => handleAnswer(question.key, e.target.value)}
               placeholder="Digite sua resposta..."
               rows={4}
