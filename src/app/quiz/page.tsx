@@ -123,7 +123,7 @@ export default function Quiz() {
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState({})
   const [showResult, setShowResult] = useState(false)
-  const [resultData, setResultData] = useState(null)
+  const [resultData, setResultData] = useState<any>(null)
 
   const handleAnswer = (key: string, value: any) => {
     setAnswers((prev: any) => ({ ...prev, [key]: value }))
@@ -215,7 +215,7 @@ export default function Quiz() {
   }
 
   if (showResult && resultData) {
-    const { score, category, icon } = resultData as any
+    const { score, category, icon } = resultData
 
     return (
       <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50 flex items-center justify-center p-4">
