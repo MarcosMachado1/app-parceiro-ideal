@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, ReactNode } from 'react'
 import { ArrowLeft, ArrowRight, Heart, Star, CheckCircle, AlertCircle } from 'lucide-react'
 
 const questions = [
@@ -117,18 +117,24 @@ const questions = [
     question: 'O que você mais valoriza no seu parceiro?',
     key: 'valoriza'
   }
-] as const
+]
 
 // Interface para tipagem simples
 interface Answers {
   [key: string]: string | number | string[] | undefined
 }
 
+interface ResultData {
+  score: number
+  category: string
+  icon: ReactNode
+}
+
 export default function Quiz() {
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState<Answers>({})
   const [showResult, setShowResult] = useState(false)
-  const [resultData, setResultData] = useState<{score: number; category: string; icon: JSX.Element} | null>(null)
+  const [resultData, setResultData] = useState<ResultData | null>(null)
 
   const handleAnswer = (key: string, value: string | number | string[]) => {
     setAnswers(prev => ({ ...prev, [key]: value }))
@@ -176,7 +182,7 @@ export default function Quiz() {
     const finalScore = Math.max(0, Math.min(100, Math.round((score / maxPossibleScore) * 100)))
 
     let category = ''
-    let icon: JSX.Element
+    let icon: ReactNode
     
     if (finalScore >= 80) {
       category = 'Saudável'
