@@ -123,6 +123,16 @@ export default function Quiz() {
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState({})
   const [showResult, setShowResult] = useState(false)
+  const [showMotivationalMessage, setShowMotivationalMessage] = useState(false)
+  const [motivationalMessage, setMotivationalMessage] = useState('')
+
+  const motivationalQuestions = [2, 6, 9, 13] // índices 0-based para perguntas 3,7,10,14
+  const messages = {
+    2: "Estamos aqui pra te ajudar a encontrar mais satisfação! 💕",
+    6: "Planos alinhados são fundamentais! Estamos te guiando. 🌟",
+    9: "Suporte emocional é essencial. Conte conosco! 🤗",
+    13: "Compartilhar medos fortalece vínculos. Você está no caminho certo! 💪"
+  }
 
   const handleAnswer = (key: string, value: string | number | string[]) => {
     setAnswers(prev => ({ ...prev, [key]: value }))
@@ -131,6 +141,11 @@ export default function Quiz() {
   const nextQuestion = () => {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1)
+      if (motivationalQuestions.includes(currentQuestion + 1)) {
+        setMotivationalMessage(messages[currentQuestion + 1 as keyof typeof messages])
+        setShowMotivationalMessage(true)
+        setTimeout(() => setShowMotivationalMessage(false), 3000)
+      }
     } else {
       calculateResult()
     }
@@ -224,6 +239,11 @@ export default function Quiz() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50 flex items-center justify-center p-4">
+      {showMotivationalMessage && (
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-pink-500 text-white px-6 py-3 rounded-full shadow-lg z-50 motivational-message">
+          {motivationalMessage}
+        </div>
+      )}
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
         <div className="mb-6">
           <div className="flex justify-between items-center mb-4">
