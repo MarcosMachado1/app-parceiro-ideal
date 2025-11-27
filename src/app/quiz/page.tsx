@@ -3,6 +3,13 @@
 import { useState } from 'react'
 import { ArrowLeft, ArrowRight, Heart } from 'lucide-react'
 
+// Interface para as respostas
+interface Answers {
+  [key: string]: string | number | string[];
+  score?: number;
+  category?: string;
+}
+
 const questions = [
   {
     id: 1,
@@ -121,13 +128,13 @@ const questions = [
 
 export default function Quiz() {
   const [currentQuestion, setCurrentQuestion] = useState(0)
-  const [answers, setAnswers] = useState({})
+  const [answers, setAnswers] = useState<Answers>({})
   const [showResult, setShowResult] = useState(false)
   const [showMotivationalMessage, setShowMotivationalMessage] = useState(false)
   const [motivationalMessage, setMotivationalMessage] = useState('')
 
   const motivationalQuestions = [2, 6, 9, 13] // índices 0-based para perguntas 3,7,10,14
-  const messages = {
+  const messages: { [key: number]: string } = {
     2: "Estamos aqui pra te ajudar a encontrar mais satisfação! 💕",
     6: "Planos alinhados são fundamentais! Estamos te guiando. 🌟",
     9: "Suporte emocional é essencial. Conte conosco! 🤗",
@@ -142,7 +149,7 @@ export default function Quiz() {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1)
       if (motivationalQuestions.includes(currentQuestion + 1)) {
-        setMotivationalMessage(messages[currentQuestion + 1 as keyof typeof messages])
+        setMotivationalMessage(messages[currentQuestion + 1])
         setShowMotivationalMessage(true)
         setTimeout(() => setShowMotivationalMessage(false), 3000)
       }
@@ -165,14 +172,14 @@ export default function Quiz() {
 
     numericKeys.forEach(key => {
       if (answers[key]) {
-        score += parseInt(answers[key])
+        score += parseInt(answers[key] as string)
         count++
       }
     })
 
     // Penalizar conflitos
     if (answers.conflitos) {
-      score -= answers.conflitos.length * 2
+      score -= (answers.conflitos as string[]).length * 2
     }
 
     // Bonus para planos alinhados
@@ -261,7 +268,7 @@ export default function Quiz() {
         <div className="mb-8">
           {question.type === 'select' && (
             <select
-              value={answers[question.key] || ''}
+              value={answers[question.key] as string || ''}
               onChange={(e) => handleAnswer(question.key, e.target.value)}
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
             >
@@ -278,7 +285,7 @@ export default function Quiz() {
                 type="range"
                 min={question.min}
                 max={question.max}
-                value={answers[question.key] || question.min}
+                value={answers[question.key] as number || question.min}
                 onChange={(e) => handleAnswer(question.key, e.target.value)}
                 className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
               />
@@ -295,7 +302,7 @@ export default function Quiz() {
               type="number"
               min={question.min}
               max={question.max}
-              value={answers[question.key] || ''}
+              value={answers[question.key] as string || ''}
               onChange={(e) => handleAnswer(question.key, e.target.value)}
               placeholder="Digite o número..."
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
@@ -308,9 +315,9 @@ export default function Quiz() {
                 <label key={option} className="flex items-center">
                   <input
                     type="checkbox"
-                    checked={answers[question.key]?.includes(option) || false}
+                    checked={(answers[question.key] as string[] || []).includes(option)}
                     onChange={(e) => {
-                      const current = answers[question.key] || []
+                      const current = answers[question.key] as string[] || []
                       if (e.target.checked) {
                         handleAnswer(question.key, [...current, option])
                       } else {
@@ -327,7 +334,7 @@ export default function Quiz() {
 
           {question.type === 'text' && (
             <textarea
-              value={answers[question.key] || ''}
+              value={answers[question.key] as string || ''}
               onChange={(e) => handleAnswer(question.key, e.target.value)}
               placeholder="Digite sua resposta..."
               rows={4}
@@ -347,7 +354,7 @@ export default function Quiz() {
           </button>
           <button
             onClick={nextQuestion}
-            disabled={!answers[question.key] || (question.type === 'multiselect' && (!answers[question.key] || answers[question.key].length === 0))}
+            disabled={!answers[question.key] || (question.type === 'multiselect' && ((answers[question.key] as string[]).length === 0))}
             className="flex items-center gap-2 bg-pink-500 hover:bg-pink-600 disabled:bg-gray-300 text-white font-semibold py-2 px-4 rounded-lg transition-colors disabled:cursor-not-allowed"
           >
             {currentQuestion === questions.length - 1 ? 'Finalizar' : 'Próxima'}
