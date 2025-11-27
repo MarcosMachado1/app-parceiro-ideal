@@ -10,7 +10,18 @@ interface Answers {
   category?: string;
 }
 
-const questions = [
+// Interface para as perguntas
+interface Question {
+  id: number;
+  type: string;
+  question: string;
+  options?: string[];
+  min?: number;
+  max?: number;
+  key: string;
+}
+
+const questions: Question[] = [
   {
     id: 1,
     type: 'select',
@@ -266,7 +277,7 @@ export default function Quiz() {
         </div>
 
         <div className="mb-8">
-          {question.type === 'select' && (
+          {question.type === 'select' && question.options && (
             <select
               value={answers[question.key] as string || ''}
               onChange={(e) => handleAnswer(question.key, e.target.value)}
@@ -309,7 +320,7 @@ export default function Quiz() {
             />
           )}
 
-          {question.type === 'multiselect' && (
+          {question.type === 'multiselect' && question.options && (
             <div className="space-y-2">
               {question.options.map(option => (
                 <label key={option} className="flex items-center">
