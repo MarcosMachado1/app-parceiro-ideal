@@ -3,9 +3,9 @@
 import { useState } from 'react'
 import { ArrowLeft, ArrowRight, Heart } from 'lucide-react'
 
-// Interface para as respostas
+// Interface corrigida para as respostas
 interface Answers {
-  [key: string]: string | number | string[];
+  [key: string]: string | number | string[] | undefined;
   score?: number;
   category?: string;
 }
