@@ -1,27 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { ArrowLeft, ArrowRight, Heart } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Heart, Sparkles } from 'lucide-react'
 
-// Interface corrigida para as respostas
-interface Answers {
-  [key: string]: string | number | string[] | undefined;
-  score?: number;
-  category?: string;
-}
-
-// Interface para as perguntas
-interface Question {
-  id: number;
-  type: string;
-  question: string;
-  options?: string[];
-  min?: number;
-  max?: number;
-  key: string;
-}
-
-const questions: Question[] = [
+const questions = [
   {
     id: 1,
     type: 'select',
@@ -139,17 +121,17 @@ const questions: Question[] = [
 
 export default function Quiz() {
   const [currentQuestion, setCurrentQuestion] = useState(0)
-  const [answers, setAnswers] = useState<Answers>({})
+  const [answers, setAnswers] = useState({})
   const [showResult, setShowResult] = useState(false)
   const [showMotivationalMessage, setShowMotivationalMessage] = useState(false)
   const [motivationalMessage, setMotivationalMessage] = useState('')
 
   const motivationalQuestions = [2, 6, 9, 13] // índices 0-based para perguntas 3,7,10,14
-  const messages: { [key: number]: string } = {
-    2: "Estamos aqui pra te ajudar a encontrar mais satisfação! 💕",
-    6: "Planos alinhados são fundamentais! Estamos te guiando. 🌟",
-    9: "Suporte emocional é essencial. Conte conosco! 🤗",
-    13: "Compartilhar medos fortalece vínculos. Você está no caminho certo! 💪"
+  const messages = {
+    2: "💕 Estamos aqui pra te ajudar a encontrar mais satisfação!",
+    6: "🌟 Planos alinhados são fundamentais! Estamos te guiando.",
+    9: "🤗 Suporte emocional é essencial. Conte conosco!",
+    13: "💪 Compartilhar medos fortalece vínculos. Você está no caminho certo!"
   }
 
   const handleAnswer = (key: string, value: string | number | string[]) => {
@@ -160,7 +142,7 @@ export default function Quiz() {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1)
       if (motivationalQuestions.includes(currentQuestion + 1)) {
-        setMotivationalMessage(messages[currentQuestion + 1])
+        setMotivationalMessage(messages[currentQuestion + 1 as keyof typeof messages])
         setShowMotivationalMessage(true)
         setTimeout(() => setShowMotivationalMessage(false), 3000)
       }
@@ -175,6 +157,18 @@ export default function Quiz() {
     }
   }
 
+  const getScoreAnalysis = (score: number) => {
+    if (score >= 80) {
+      return "Seu relacionamento mostra sinais muito positivos! A comunicação e confiança estão em níveis excelentes, mas sempre há espaço para aprofundar ainda mais a conexão."
+    } else if (score >= 60) {
+      return "Existem áreas sólidas no seu relacionamento, mas alguns pontos precisam de atenção. A boa notícia é que com pequenos ajustes, você pode elevar significativamente a qualidade da relação."
+    } else if (score >= 40) {
+      return "Seu relacionamento está enfrentando desafios importantes. Os padrões de comunicação e confiança precisam ser trabalhados urgentemente para evitar desgastes maiores."
+    } else {
+      return "Há sinais críticos que não podem ser ignorados. Seu relacionamento precisa de intervenção imediata para reconstruir as bases de confiança e comunicação."
+    }
+  }
+
   const calculateResult = () => {
     // Cálculo simples do score baseado nas respostas numéricas
     const numericKeys = ['satisfacao', 'comunicacao', 'intimidade', 'confianca', 'tempo_qualidade', 'suporte', 'valores', 'vida_social', 'metas']
@@ -183,14 +177,14 @@ export default function Quiz() {
 
     numericKeys.forEach(key => {
       if (answers[key]) {
-        score += parseInt(answers[key] as string)
+        score += parseInt(answers[key])
         count++
       }
     })
 
     // Penalizar conflitos
     if (answers.conflitos) {
-      score -= (answers.conflitos as string[]).length * 2
+      score -= answers.conflitos.length * 2
     }
 
     // Bonus para planos alinhados
@@ -211,42 +205,81 @@ export default function Quiz() {
 
   if (showResult) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50 flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center">
-          <Heart className="w-16 h-16 text-pink-500 mx-auto mb-4" />
-          <h1 className="text-3xl font-bold text-gray-800 mb-4">Seu Resultado</h1>
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-rose-50 flex items-center justify-center p-4">
+        <div className="max-w-2xl w-full bg-white rounded-3xl shadow-2xl p-8 md:p-12 text-center animate-fade-in">
+          <div className="relative">
+            <div className="absolute -top-6 -right-6 w-24 h-24 bg-pink-200 rounded-full blur-3xl opacity-50 animate-pulse"></div>
+            <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-purple-200 rounded-full blur-3xl opacity-50 animate-pulse delay-1000"></div>
+            
+            <Heart className="w-20 h-20 text-pink-500 mx-auto mb-6 animate-bounce-slow" />
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6 bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
+              Seu Resultado
+            </h1>
+          </div>
           
-          <div className="mb-6">
-            <div className="text-6xl font-bold text-pink-500 mb-2">{answers.score}</div>
-            <div className="text-xl font-semibold text-gray-700 mb-2">{answers.category}</div>
-            <div className="w-full bg-gray-200 rounded-full h-3 mb-4">
+          <div className="mb-8 relative">
+            <div className="text-7xl md:text-8xl font-bold text-pink-500 mb-3 animate-scale-in">
+              {answers.score}
+            </div>
+            <div className="text-2xl font-semibold text-gray-700 mb-4">{answers.category}</div>
+            <div className="w-full bg-gray-200 rounded-full h-4 mb-6 overflow-hidden shadow-inner">
               <div 
-                className="bg-pink-500 h-3 rounded-full transition-all duration-500"
+                className="bg-gradient-to-r from-pink-500 to-purple-600 h-4 rounded-full transition-all duration-1000 ease-out shadow-lg"
                 style={{ width: `${answers.score}%` }}
               ></div>
             </div>
           </div>
 
-          <div className="text-left mb-6">
-            <h3 className="font-semibold mb-2">Resultado Básico Gratuito</h3>
-            <p className="text-sm text-gray-600 mb-4">
-              Seu relacionamento está na categoria <strong>{answers.category}</strong> com score de <strong>{answers.score}/100</strong>.
-            </p>
+          <div className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl p-6 mb-8 text-left border border-pink-100 shadow-sm">
+            <div className="flex items-start gap-3 mb-4">
+              <Sparkles className="w-6 h-6 text-pink-500 flex-shrink-0 mt-1" />
+              <div>
+                <h3 className="font-bold text-lg text-gray-800 mb-2">Análise Inicial do Seu Score</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  {getScoreAnalysis(answers.score)}
+                </p>
+              </div>
+            </div>
           </div>
 
-          <div className="border-t pt-6">
-            <h3 className="font-semibold mb-4">Quer o Relatório Completo?</h3>
-            <p className="text-sm text-gray-600 mb-4">
-              Análise detalhada, pontos fortes/fracos, 5 ações para melhorar e conselhos práticos.
+          <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 mb-6 border-2 border-amber-200 shadow-lg">
+            <h3 className="font-bold text-xl text-gray-800 mb-3 flex items-center justify-center gap-2">
+              <Heart className="w-5 h-5 text-pink-500" />
+              Desbloqueie o Relatório Completo
+            </h3>
+            <p className="text-gray-700 mb-4 leading-relaxed">
+              Descubra os <strong>pontos críticos</strong> que estão impedindo seu relacionamento de prosperar, 
+              receba <strong>5 ações práticas personalizadas</strong> e um plano detalhado para transformar sua relação.
             </p>
+            <ul className="text-left text-sm text-gray-600 mb-6 space-y-2">
+              <li className="flex items-start gap-2">
+                <span className="text-pink-500 font-bold">✓</span>
+                <span>Análise profunda de cada área do relacionamento</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-pink-500 font-bold">✓</span>
+                <span>Identificação dos seus pontos fortes e fracos</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-pink-500 font-bold">✓</span>
+                <span>5 ações práticas e imediatas para melhorar</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-pink-500 font-bold">✓</span>
+                <span>Conselhos personalizados baseados nas suas respostas</span>
+              </li>
+            </ul>
             <a
-              href="https://kiwify.com.br/parceiro-ideal"
+              href="https://pay.kiwify.com.br/LnKRt9G"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+              className="inline-block w-full bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white font-bold text-lg py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl"
             >
-              Comprar Relatório Completo - R$ 57
+              💝 Transformar Meu Relacionamento Agora
             </a>
+            <p className="text-xs text-gray-500 mt-3">
+              Acesso imediato • Pagamento 100% seguro
+            </p>
           </div>
         </div>
       </div>
@@ -256,32 +289,34 @@ export default function Quiz() {
   const question = questions[currentQuestion]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-rose-50 flex items-center justify-center p-4">
       {showMotivationalMessage && (
-        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-pink-500 text-white px-6 py-3 rounded-full shadow-lg z-50 motivational-message">
-          {motivationalMessage}
+        <div className="fixed top-8 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-pink-500 to-purple-600 text-white px-8 py-4 rounded-2xl shadow-2xl z-50 animate-slide-down max-w-md text-center">
+          <p className="font-semibold text-lg">{motivationalMessage}</p>
         </div>
       )}
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
-        <div className="mb-6">
-          <div className="flex justify-between items-center mb-4">
-            <span className="text-sm text-gray-500">Pergunta {currentQuestion + 1} de {questions.length}</span>
-            <div className="w-20 bg-gray-200 rounded-full h-2">
+      <div className="max-w-2xl w-full bg-white rounded-3xl shadow-2xl p-8 md:p-10 animate-fade-in">
+        <div className="mb-8">
+          <div className="flex justify-between items-center mb-6">
+            <span className="text-sm font-medium text-gray-600 bg-pink-50 px-4 py-2 rounded-full">
+              Pergunta {currentQuestion + 1} de {questions.length}
+            </span>
+            <div className="w-32 bg-gray-200 rounded-full h-3 shadow-inner overflow-hidden">
               <div 
-                className="bg-pink-500 h-2 rounded-full transition-all duration-300"
+                className="bg-gradient-to-r from-pink-500 to-purple-600 h-3 rounded-full transition-all duration-500 ease-out"
                 style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
               ></div>
             </div>
           </div>
-          <h2 className="text-xl font-semibold text-gray-800">{question.question}</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 leading-tight">{question.question}</h2>
         </div>
 
-        <div className="mb-8">
-          {question.type === 'select' && question.options && (
+        <div className="mb-10">
+          {question.type === 'select' && (
             <select
-              value={answers[question.key] as string || ''}
+              value={answers[question.key] || ''}
               onChange={(e) => handleAnswer(question.key, e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+              className="w-full p-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-pink-200 focus:border-pink-500 transition-all duration-300 text-lg bg-gray-50 hover:bg-white"
             >
               <option value="">Selecione...</option>
               {question.options.map(option => (
@@ -291,19 +326,21 @@ export default function Quiz() {
           )}
 
           {question.type === 'range' && (
-            <div>
+            <div className="space-y-4">
               <input
                 type="range"
                 min={question.min}
                 max={question.max}
-                value={answers[question.key] as number || question.min}
+                value={answers[question.key] || question.min}
                 onChange={(e) => handleAnswer(question.key, e.target.value)}
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                className="w-full h-3 bg-gradient-to-r from-pink-200 to-purple-200 rounded-lg appearance-none cursor-pointer slider-thumb"
               />
-              <div className="flex justify-between text-sm text-gray-500 mt-2">
-                <span>{question.min}</span>
-                <span className="font-semibold">{answers[question.key] || question.min}</span>
-                <span>{question.max}</span>
+              <div className="flex justify-between text-sm text-gray-500 px-2">
+                <span className="font-medium">{question.min}</span>
+                <span className="font-bold text-2xl text-pink-500 animate-pulse">
+                  {answers[question.key] || question.min}
+                </span>
+                <span className="font-medium">{question.max}</span>
               </div>
             </div>
           )}
@@ -313,31 +350,36 @@ export default function Quiz() {
               type="number"
               min={question.min}
               max={question.max}
-              value={answers[question.key] as string || ''}
+              value={answers[question.key] || ''}
               onChange={(e) => handleAnswer(question.key, e.target.value)}
               placeholder="Digite o número..."
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+              className="w-full p-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-pink-200 focus:border-pink-500 transition-all duration-300 text-lg bg-gray-50 hover:bg-white"
             />
           )}
 
-          {question.type === 'multiselect' && question.options && (
-            <div className="space-y-2">
+          {question.type === 'multiselect' && (
+            <div className="space-y-3">
               {question.options.map(option => (
-                <label key={option} className="flex items-center">
+                <label 
+                  key={option} 
+                  className="flex items-center p-4 border-2 border-gray-200 rounded-xl hover:border-pink-300 hover:bg-pink-50 transition-all duration-300 cursor-pointer group"
+                >
                   <input
                     type="checkbox"
-                    checked={(answers[question.key] as string[] || []).includes(option)}
+                    checked={answers[question.key]?.includes(option) || false}
                     onChange={(e) => {
-                      const current = answers[question.key] as string[] || []
+                      const current = answers[question.key] || []
                       if (e.target.checked) {
                         handleAnswer(question.key, [...current, option])
                       } else {
                         handleAnswer(question.key, current.filter(item => item !== option))
                       }
                     }}
-                    className="mr-2"
+                    className="w-5 h-5 text-pink-500 border-2 border-gray-300 rounded focus:ring-2 focus:ring-pink-500 mr-3"
                   />
-                  {option}
+                  <span className="text-gray-700 font-medium group-hover:text-pink-600 transition-colors">
+                    {option}
+                  </span>
                 </label>
               ))}
             </div>
@@ -345,34 +387,126 @@ export default function Quiz() {
 
           {question.type === 'text' && (
             <textarea
-              value={answers[question.key] as string || ''}
+              value={answers[question.key] || ''}
               onChange={(e) => handleAnswer(question.key, e.target.value)}
               placeholder="Digite sua resposta..."
-              rows={4}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+              rows={5}
+              className="w-full p-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-pink-200 focus:border-pink-500 transition-all duration-300 text-lg bg-gray-50 hover:bg-white resize-none"
             />
           )}
         </div>
 
-        <div className="flex justify-between">
+        <div className="flex justify-between items-center pt-6 border-t-2 border-gray-100">
           <button
             onClick={prevQuestion}
             disabled={currentQuestion === 0}
-            className="flex items-center gap-2 px-4 py-2 text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-6 py-3 text-gray-600 font-semibold rounded-xl hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 hover:scale-105"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-5 h-5" />
             Anterior
           </button>
           <button
             onClick={nextQuestion}
-            disabled={!answers[question.key] || (question.type === 'multiselect' && ((answers[question.key] as string[]).length === 0))}
-            className="flex items-center gap-2 bg-pink-500 hover:bg-pink-600 disabled:bg-gray-300 text-white font-semibold py-2 px-4 rounded-lg transition-colors disabled:cursor-not-allowed"
+            disabled={!answers[question.key] || (question.type === 'multiselect' && (!answers[question.key] || answers[question.key].length === 0))}
+            className="flex items-center gap-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 disabled:from-gray-300 disabled:to-gray-400 text-white font-bold py-3 px-8 rounded-xl transition-all duration-300 disabled:cursor-not-allowed transform hover:scale-105 hover:shadow-xl disabled:hover:scale-100 disabled:hover:shadow-none"
           >
-            {currentQuestion === questions.length - 1 ? 'Finalizar' : 'Próxima'}
-            <ArrowRight className="w-4 h-4" />
+            {currentQuestion === questions.length - 1 ? 'Ver Resultado' : 'Próxima'}
+            <ArrowRight className="w-5 h-5" />
           </button>
         </div>
       </div>
+
+      <style jsx global>{`
+        @keyframes fade-in {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes slide-down {
+          from {
+            opacity: 0;
+            transform: translate(-50%, -100%);
+          }
+          to {
+            opacity: 1;
+            transform: translate(-50%, 0);
+          }
+        }
+
+        @keyframes scale-in {
+          from {
+            transform: scale(0.5);
+            opacity: 0;
+          }
+          to {
+            transform: scale(1);
+            opacity: 1;
+          }
+        }
+
+        @keyframes bounce-slow {
+          0%, 100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-10px);
+          }
+        }
+
+        .animate-fade-in {
+          animation: fade-in 0.6s ease-out;
+        }
+
+        .animate-slide-down {
+          animation: slide-down 0.5s ease-out;
+        }
+
+        .animate-scale-in {
+          animation: scale-in 0.8s ease-out;
+        }
+
+        .animate-bounce-slow {
+          animation: bounce-slow 2s ease-in-out infinite;
+        }
+
+        .slider-thumb::-webkit-slider-thumb {
+          appearance: none;
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #ec4899, #8b5cf6);
+          cursor: pointer;
+          box-shadow: 0 2px 8px rgba(236, 72, 153, 0.4);
+          transition: all 0.3s ease;
+        }
+
+        .slider-thumb::-webkit-slider-thumb:hover {
+          transform: scale(1.2);
+          box-shadow: 0 4px 12px rgba(236, 72, 153, 0.6);
+        }
+
+        .slider-thumb::-moz-range-thumb {
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #ec4899, #8b5cf6);
+          cursor: pointer;
+          border: none;
+          box-shadow: 0 2px 8px rgba(236, 72, 153, 0.4);
+          transition: all 0.3s ease;
+        }
+
+        .slider-thumb::-moz-range-thumb:hover {
+          transform: scale(1.2);
+          box-shadow: 0 4px 12px rgba(236, 72, 153, 0.6);
+        }
+      `}</style>
     </div>
   )
 }
