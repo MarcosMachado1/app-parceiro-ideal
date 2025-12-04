@@ -318,18 +318,18 @@ export default function Quiz() {
         </div>
 
         <div className="mb-10">
-          {question.type === 'select' && (
-            <select
-              value={answers[question.key] || ''}
-              onChange={(e) => handleAnswer(question.key, e.target.value)}
-              className="w-full p-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-pink-200 focus:border-pink-500 transition-all duration-300 text-lg bg-gray-50 hover:bg-white"
-            >
-              <option value="">Selecione...</option>
-              {question.options.map(option => (
-                <option key={option} value={option}>{option}</option>
-              ))}
-            </select>
-          )}
+           {question.type === 'select' && question.options && (
+  <select
+    value={answers[question.key] || ''}
+    onChange={(e) => handleAnswer(question.key, e.target.value)}
+    className="w-full p-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-pink-200 focus:border-pink-500 transition-all duration-300 text-lg bg-gray-50 hover:bg-white"
+  >
+    <option value="">Selecione...</option>
+    {question.options.map(option => (
+      <option key={option} value={option}>{option}</option>
+    ))}
+  </select>
+)}
 
           {question.type === 'range' && (
             <div className="space-y-4">
