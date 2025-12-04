@@ -3,6 +3,12 @@
 import { useState } from 'react'
 import { ArrowLeft, ArrowRight, Heart, Sparkles } from 'lucide-react'
 
+interface Answers {
+  [key: string]: string | number | string[]
+  score?: number
+  category?: string
+}
+
 const questions = [
   {
     id: 1,
@@ -121,7 +127,7 @@ const questions = [
 
 export default function Quiz() {
   const [currentQuestion, setCurrentQuestion] = useState(0)
-  const [answers, setAnswers] = useState({})
+  const [answers, setAnswers] = useState<Answers>({})
   const [showResult, setShowResult] = useState(false)
   const [showMotivationalMessage, setShowMotivationalMessage] = useState(false)
   const [motivationalMessage, setMotivationalMessage] = useState('')
@@ -177,14 +183,14 @@ export default function Quiz() {
 
     numericKeys.forEach(key => {
       if (answers[key]) {
-        score += parseInt(answers[key])
+        score += parseInt(answers[key] as string)
         count++
       }
     })
 
     // Penalizar conflitos
-    if (answers.conflitos) {
-      score -= answers.conflitos.length * 2
+    if (answers.conflitos && Array.isArray(answers.conflitos)) {
+      score -= (answers.conflitos as string[]).length * 2
     }
 
     // Bonus para planos alinhados
@@ -236,7 +242,7 @@ export default function Quiz() {
               <div>
                 <h3 className="font-bold text-lg text-gray-800 mb-2">Análise Inicial do Seu Score</h3>
                 <p className="text-gray-700 leading-relaxed">
-                  {getScoreAnalysis(answers.score)}
+                  {getScoreAnalysis(answers.score as number)}
                 </p>
               </div>
             </div>
@@ -366,9 +372,9 @@ export default function Quiz() {
                 >
                   <input
                     type="checkbox"
-                    checked={answers[question.key]?.includes(option) || false}
+                    checked={(answers[question.key] as string[])?.includes(option) || false}
                     onChange={(e) => {
-                      const current = answers[question.key] || []
+                      const current = (answers[question.key] as string[]) || []
                       if (e.target.checked) {
                         handleAnswer(question.key, [...current, option])
                       } else {
@@ -407,7 +413,7 @@ export default function Quiz() {
           </button>
           <button
             onClick={nextQuestion}
-            disabled={!answers[question.key] || (question.type === 'multiselect' && (!answers[question.key] || answers[question.key].length === 0))}
+            disabled={!answers[question.key] || (question.type === 'multiselect' && (!answers[question.key] || (answers[question.key] as string[]).length === 0))}
             className="flex items-center gap-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 disabled:from-gray-300 disabled:to-gray-400 text-white font-bold py-3 px-8 rounded-xl transition-all duration-300 disabled:cursor-not-allowed transform hover:scale-105 hover:shadow-xl disabled:hover:scale-100 disabled:hover:shadow-none"
           >
             {currentQuestion === questions.length - 1 ? 'Ver Resultado' : 'Próxima'}
