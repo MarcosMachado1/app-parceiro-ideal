@@ -363,33 +363,33 @@ export default function Quiz() {
             />
           )}
 
-          {question.type === 'multiselect' && (
-            <div className="space-y-3">
-              {question.options.map(option => (
-                <label 
-                  key={option} 
-                  className="flex items-center p-4 border-2 border-gray-200 rounded-xl hover:border-pink-300 hover:bg-pink-50 transition-all duration-300 cursor-pointer group"
-                >
-                  <input
-                    type="checkbox"
-                    checked={(answers[question.key] as string[])?.includes(option) || false}
-                    onChange={(e) => {
-                      const current = (answers[question.key] as string[]) || []
-                      if (e.target.checked) {
-                        handleAnswer(question.key, [...current, option])
-                      } else {
-                        handleAnswer(question.key, current.filter(item => item !== option))
-                      }
-                    }}
-                    className="w-5 h-5 text-pink-500 border-2 border-gray-300 rounded focus:ring-2 focus:ring-pink-500 mr-3"
-                  />
-                  <span className="text-gray-700 font-medium group-hover:text-pink-600 transition-colors">
-                    {option}
-                  </span>
-                </label>
-              ))}
-            </div>
-          )}
+          {question.type === 'multiselect' && question.options && (
+  <div className="space-y-3">
+    {question.options.map(option => (
+      <label 
+        key={option} 
+        className="flex items-center p-4 border-2 border-gray-200 rounded-xl hover:border-pink-300 hover:bg-pink-50 transition-all duration-300 cursor-pointer group"
+      >
+        <input
+          type="checkbox"
+          checked={(answers[question.key] as string[])?.includes(option) || false}
+          onChange={(e) => {
+            const current = (answers[question.key] as string[]) || []
+            if (e.target.checked) {
+              handleAnswer(question.key, [...current, option])
+            } else {
+              handleAnswer(question.key, current.filter(item => item !== option))
+            }
+          }}
+          className="w-5 h-5 text-pink-500 border-2 border-gray-300 rounded focus:ring-2 focus:ring-pink-500 mr-3"
+        />
+        <span className="text-gray-700 font-medium group-hover:text-pink-600 transition-colors">
+          {option}
+        </span>
+      </label>
+    ))}
+  </div>
+)}
 
           {question.type === 'text' && (
             <textarea
