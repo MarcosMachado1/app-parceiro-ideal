@@ -1,0 +1,7 @@
+# Use este comando para criar o arquivo:
+cat > src/types/minimatch.d.ts << 'EOF'
+declare module 'minimatch' {
+  export function minimatch(target: string, pattern: string, options?: any): boolean;
+  export default function minimatch(target: string, pattern: string, options?: any): boolean;
+}
+EOF
