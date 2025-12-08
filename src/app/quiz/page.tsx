@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { ArrowLeft, ArrowRight, Heart, Sparkles } from 'lucide-react'
 
 interface Answers {
-  [key: string]: string | number | string[] | undefined
+  [key: string]: string | number | string[]
   score?: number
   category?: string
 }
@@ -377,18 +377,18 @@ export default function Quiz() {
         </div>
 
         <div className="mb-10">
-        {question.type === 'select' && question.options && (
-  <select
-    value={answers[question.key] || ''}
-    onChange={(e) => handleAnswer(question.key, e.target.value)}
-    className="w-full p-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-pink-200 focus:border-pink-500 transition-all duration-300 text-lg bg-gray-50 hover:bg-white"
-  >
-    <option value="">Selecione...</option>
-    {question.options.map(option => (
-      <option key={option} value={option}>{option}</option>
-    ))}
-  </select>
-)}
+          {question.type === 'select' && (
+            <select
+              value={answers[question.key] || ''}
+              onChange={(e) => handleAnswer(question.key, e.target.value)}
+              className="w-full p-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-pink-200 focus:border-pink-500 transition-all duration-300 text-lg bg-gray-50 hover:bg-white"
+            >
+              <option value="">Selecione...</option>
+              {question.options.map(option => (
+                <option key={option} value={option}>{option}</option>
+              ))}
+            </select>
+          )}
 
           {question.type === 'range' && (
             <div className="space-y-4">
@@ -422,9 +422,9 @@ export default function Quiz() {
             />
           )}
 
-        {question.type === 'multiselect' && question.options && (
-  <div className="space-y-3">
-    {question.options.map(option => (
+          {question.type === 'multiselect' && (
+            <div className="space-y-3">
+              {question.options.map(option => (
                 <label 
                   key={option} 
                   className="flex items-center p-4 border-2 border-gray-200 rounded-xl hover:border-pink-300 hover:bg-pink-50 transition-all duration-300 cursor-pointer group"
