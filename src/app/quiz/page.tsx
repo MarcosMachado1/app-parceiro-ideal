@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { ArrowLeft, ArrowRight, Heart, Sparkles } from 'lucide-react'
 
 interface Answers {
-  [key: string]: string | number | string[] | undefined  // ADICIONE "| undefined" AQUI
+  [key: string]: string | number | string[]
   score?: number
   category?: string
 }
@@ -126,6 +126,7 @@ const questions = [
 ]
 
 export default function Quiz() {
+  const [started, setStarted] = useState(false)
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState<Answers>({})
   const [showResult, setShowResult] = useState(false)
@@ -207,6 +208,64 @@ export default function Quiz() {
 
     setAnswers(prev => ({ ...prev, score: finalScore, category }))
     setShowResult(true)
+  }
+
+  // TELA INICIAL - MODIFICADA CONFORME SOLICITADO
+  if (!started) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-rose-50 flex items-center justify-center p-4">
+        <div className="max-w-2xl w-full bg-white rounded-3xl shadow-2xl p-8 md:p-12 text-center animate-fade-in relative overflow-hidden">
+          {/* Efeitos de fundo premium */}
+          <div className="absolute -top-20 -right-20 w-40 h-40 bg-pink-300 rounded-full blur-3xl opacity-30 animate-pulse"></div>
+          <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-purple-300 rounded-full blur-3xl opacity-30 animate-pulse delay-1000"></div>
+          
+          <div className="relative z-10">
+            {/* Ícone com sombra premium */}
+            <div className="inline-block p-4 bg-gradient-to-br from-pink-100 to-purple-100 rounded-full mb-6 shadow-lg">
+              <Heart className="w-16 h-16 text-pink-500 animate-bounce-slow" />
+            </div>
+            
+            {/* Título modificado */}
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4 leading-tight">
+              A resposta para <span className="bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">"Será que é ele(a)?"</span>
+            </h1>
+            
+            {/* Subtítulo modificado */}
+            <p className="text-xl md:text-2xl text-gray-600 mb-8 font-medium">
+              Está em 15 perguntas diretas
+            </p>
+            
+            {/* Texto explicativo (substitui a lista de bullets) */}
+            <div className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl p-6 md:p-8 mb-8 text-left shadow-inner border border-pink-100">
+              <p className="text-gray-700 leading-relaxed text-base md:text-lg">
+                Este quiz analisa <strong className="text-pink-600">3 dimensões críticas ignoradas na paixão</strong>: compatibilidade de valores, comunicação sob estresse e visão de futuro. Em <strong className="text-purple-600">3 minutos</strong>, você terá um score claro e saberá se está construindo algo sólido ou apenas evitando uma conversa difícil.
+              </p>
+            </div>
+            
+            {/* Botão CTA modificado com design premium */}
+            <button
+              onClick={() => setStarted(true)}
+              className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold text-lg md:text-xl py-5 px-8 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-xl mb-4"
+            >
+              INICIAR DIAGNÓSTICO AGORA (GRATUITO)
+            </button>
+            
+            {/* Texto abaixo do botão modificado */}
+            <p className="text-sm text-gray-600 flex items-center justify-center gap-4 flex-wrap">
+              <span className="flex items-center gap-1">
+                <span className="text-green-500 font-bold">✔</span> Resultado imediato.
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="text-green-500 font-bold">✔</span> Sem cadastro.
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="text-green-500 font-bold">✔</span> Após o score, você pode optar pelo relatório detalhado.
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   if (showResult) {
@@ -318,18 +377,18 @@ export default function Quiz() {
         </div>
 
         <div className="mb-10">
-           {question.type === 'select' && question.options && (
-  <select
-    value={answers[question.key] || ''}
-    onChange={(e) => handleAnswer(question.key, e.target.value)}
-    className="w-full p-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-pink-200 focus:border-pink-500 transition-all duration-300 text-lg bg-gray-50 hover:bg-white"
-  >
-    <option value="">Selecione...</option>
-    {question.options.map(option => (
-      <option key={option} value={option}>{option}</option>
-    ))}
-  </select>
-)}
+          {question.type === 'select' && (
+            <select
+              value={answers[question.key] || ''}
+              onChange={(e) => handleAnswer(question.key, e.target.value)}
+              className="w-full p-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-pink-200 focus:border-pink-500 transition-all duration-300 text-lg bg-gray-50 hover:bg-white"
+            >
+              <option value="">Selecione...</option>
+              {question.options.map(option => (
+                <option key={option} value={option}>{option}</option>
+              ))}
+            </select>
+          )}
 
           {question.type === 'range' && (
             <div className="space-y-4">
@@ -363,33 +422,33 @@ export default function Quiz() {
             />
           )}
 
-          {question.type === 'multiselect' && question.options && (
-  <div className="space-y-3">
-    {question.options.map(option => (
-      <label 
-        key={option} 
-        className="flex items-center p-4 border-2 border-gray-200 rounded-xl hover:border-pink-300 hover:bg-pink-50 transition-all duration-300 cursor-pointer group"
-      >
-        <input
-          type="checkbox"
-          checked={(answers[question.key] as string[])?.includes(option) || false}
-          onChange={(e) => {
-            const current = (answers[question.key] as string[]) || []
-            if (e.target.checked) {
-              handleAnswer(question.key, [...current, option])
-            } else {
-              handleAnswer(question.key, current.filter(item => item !== option))
-            }
-          }}
-          className="w-5 h-5 text-pink-500 border-2 border-gray-300 rounded focus:ring-2 focus:ring-pink-500 mr-3"
-        />
-        <span className="text-gray-700 font-medium group-hover:text-pink-600 transition-colors">
-          {option}
-        </span>
-      </label>
-    ))}
-  </div>
-)}
+          {question.type === 'multiselect' && (
+            <div className="space-y-3">
+              {question.options.map(option => (
+                <label 
+                  key={option} 
+                  className="flex items-center p-4 border-2 border-gray-200 rounded-xl hover:border-pink-300 hover:bg-pink-50 transition-all duration-300 cursor-pointer group"
+                >
+                  <input
+                    type="checkbox"
+                    checked={(answers[question.key] as string[])?.includes(option) || false}
+                    onChange={(e) => {
+                      const current = (answers[question.key] as string[]) || []
+                      if (e.target.checked) {
+                        handleAnswer(question.key, [...current, option])
+                      } else {
+                        handleAnswer(question.key, current.filter(item => item !== option))
+                      }
+                    }}
+                    className="w-5 h-5 text-pink-500 border-2 border-gray-300 rounded focus:ring-2 focus:ring-pink-500 mr-3"
+                  />
+                  <span className="text-gray-700 font-medium group-hover:text-pink-600 transition-colors">
+                    {option}
+                  </span>
+                </label>
+              ))}
+            </div>
+          )}
 
           {question.type === 'text' && (
             <textarea
