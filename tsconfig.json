@@ -3,7 +3,7 @@
     "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
-    "skipLibCheck": true,
+    "skipLibCheck": true,  // ← ESTA JÁ ESTÁ AQUI, DEIXE ASSIM
     "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
@@ -13,7 +13,6 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "typeRoots": ["./node_modules/@types", "."],  // ← ADICIONE ESTA LINHA
     "plugins": [
       {
         "name": "next"
@@ -23,6 +22,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "minimatch.d.ts"],  // ← ADICIONE "minimatch.d.ts" AQUI
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }
