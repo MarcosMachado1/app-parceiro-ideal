@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { ArrowLeft, ArrowRight, Heart, Sparkles } from 'lucide-react'
 
 interface Answers {
-  [key: string]: string | number | string[] undefined
+  [key: string]: string | number | string[] | undefined
   score?: number
   category?: string
 }
