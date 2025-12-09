@@ -352,10 +352,23 @@ export default function Quiz() {
               </div>
             </div>
 
+            {/* BOTÃO MODIFICADO COM EVENTO AddToCart DO PIXEL */}
             <a
               href="https://pay.kiwify.com.br/LnKRt9G"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={(e) => {
+                // DISPARA O EVENTO AddToCart DO FACEBOOK PIXEL
+                if (typeof window !== 'undefined' && window.fbq) {
+                  window.fbq('track', 'AddToCart', {
+                    value: 57.00,
+                    currency: 'BRL',
+                    content_name: 'Relatório Completo Parceiro Ideal',
+                    content_type: 'product'
+                  });
+                }
+                // O link normal da tag <a> já fará o redirecionamento para a Kiwify
+              }}
               className="inline-block w-full bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white font-bold text-lg py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl"
             >
               INVESTIR NO MEU RELACIONAMENTO (R$ 57)
