@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { ArrowLeft, ArrowRight, Heart, Sparkles } from 'lucide-react'
 
 interface Answers {
-  [key: string]: string | number | string[] | undefined
+  [key: string]: string | number | string[]
   score?: number
   category?: string
 }
@@ -334,13 +334,31 @@ export default function Quiz() {
                 <span>Conselhos personalizados baseados nas suas respostas</span>
               </li>
             </ul>
+
+            {/* INVESTIMENTO & GARANTIA */}
+            <div className="bg-white rounded-xl p-5 mb-6 border-2 border-pink-200 shadow-sm">
+              <h4 className="font-bold text-lg text-gray-800 mb-3">💰 INVESTIMENTO & GARANTIA:</h4>
+              <p className="text-gray-700 mb-2">
+                <strong>Valor: R$ 57</strong> (ou 2x de R$ 28,50)
+              </p>
+              <p className="text-gray-700 mb-4">
+                <strong>Formas de pagamento:</strong> Cartão, PIX, Boleto
+              </p>
+              <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-4 border border-green-200">
+                <p className="font-bold text-gray-800 mb-2">🛡️ GARANTIA INCONDICIONAL DE 7 DIAS</p>
+                <p className="text-sm text-gray-700">
+                  Se em 1 semana você achar que o conteúdo não valeu o investimento, devolvemos 100% do seu dinheiro. Sem perguntas, sem burocracia.
+                </p>
+              </div>
+            </div>
+
             <a
               href="https://pay.kiwify.com.br/LnKRt9G"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block w-full bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white font-bold text-lg py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl"
             >
-              💝 Transformar Meu Relacionamento Agora
+              INVESTIR NO MEU RELACIONAMENTO (R$ 57)
             </a>
             <p className="text-xs text-gray-500 mt-3">
               Acesso imediato • Pagamento 100% seguro
@@ -384,7 +402,7 @@ export default function Quiz() {
               className="w-full p-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-pink-200 focus:border-pink-500 transition-all duration-300 text-lg bg-gray-50 hover:bg-white"
             >
               <option value="">Selecione...</option>
-              {question.options && question.options.map(option => (  // ← ADICIONE "question.options &&" AQUI
+              {question.options.map(option => (
                 <option key={option} value={option}>{option}</option>
               ))}
             </select>
@@ -424,7 +442,7 @@ export default function Quiz() {
 
           {question.type === 'multiselect' && (
             <div className="space-y-3">
-              {question.options && question.options.map(option => (  // ← ADICIONE "question.options &&" AQUI
+              {question.options.map(option => (
                 <label 
                   key={option} 
                   className="flex items-center p-4 border-2 border-gray-200 rounded-xl hover:border-pink-300 hover:bg-pink-50 transition-all duration-300 cursor-pointer group"
