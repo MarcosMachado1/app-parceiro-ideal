@@ -3,6 +3,16 @@
 import { useState } from 'react'
 import { ArrowLeft, ArrowRight, Heart, Sparkles } from 'lucide-react'
 
+// Adicione esta declaração para resolver o erro do fbq
+declare global {
+  interface Window {
+    fbq: {
+      (action: string, event: string, params?: Record<string, any>): void;
+      (...args: any[]): void;
+    };
+  }
+}
+
 interface Answers {
   [key: string]: string | number | string[] | undefined
   score?: number
@@ -415,7 +425,7 @@ export default function Quiz() {
               className="w-full p-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-pink-200 focus:border-pink-500 transition-all duration-300 text-lg bg-gray-50 hover:bg-white"
             >
               <option value="">Selecione...</option>
-              {question.options.map(option => (
+              {question.options && question.options.map(option => (
                 <option key={option} value={option}>{option}</option>
               ))}
             </select>
@@ -455,7 +465,7 @@ export default function Quiz() {
 
           {question.type === 'multiselect' && (
             <div className="space-y-3">
-              {question.options.map(option => (
+              {question.options && question.options.map(option => (
                 <label 
                   key={option} 
                   className="flex items-center p-4 border-2 border-gray-200 rounded-xl hover:border-pink-300 hover:bg-pink-50 transition-all duration-300 cursor-pointer group"
