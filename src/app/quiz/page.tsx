@@ -2,25 +2,15 @@
 
 import { useState } from 'react'
 import { ArrowLeft, ArrowRight, Heart, Sparkles, TrendingDown, Users, AlertTriangle, CheckCircle } from 'lucide-react'
+import Image from 'next/image'
 
 interface Answers {
-  [key: string]: string | number | string[] | undefined
+  [key: string]: string | number | string[]
   score?: number
   category?: string
 }
 
-interface Question {
-  id: number
-  type: 'select' | 'number' | 'range' | 'multiselect' | 'text'
-  question: string
-  options?: string[]
-  min?: number
-  max?: number
-  key: string
-  image: string
-}
-
-const questions: Question[] = [
+const questions = [
   {
     id: 1,
     type: 'select',
@@ -159,8 +149,8 @@ export default function Quiz() {
   const [showMotivationalMessage, setShowMotivationalMessage] = useState(false)
   const [motivationalMessage, setMotivationalMessage] = useState('')
 
-  const motivationalQuestions = [2, 6, 9, 13]
-  const messages: Record<number, string> = {
+  const motivationalQuestions = [2, 6, 9, 13] // índices 0-based para perguntas 3,7,10,14
+  const messages = {
     2: "💕 Estamos aqui pra te ajudar a encontrar mais satisfação!",
     6: "🌟 Planos alinhados são fundamentais! Estamos te guiando.",
     9: "🤗 Suporte emocional é essencial. Conte conosco!",
@@ -175,7 +165,7 @@ export default function Quiz() {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1)
       if (motivationalQuestions.includes(currentQuestion + 1)) {
-        setMotivationalMessage(messages[currentQuestion + 1])
+        setMotivationalMessage(messages[currentQuestion + 1 as keyof typeof messages])
         setShowMotivationalMessage(true)
         setTimeout(() => setShowMotivationalMessage(false), 3000)
       }
@@ -203,6 +193,7 @@ export default function Quiz() {
   }
 
   const calculateResult = () => {
+    // Cálculo simples do score baseado nas respostas numéricas
     const numericKeys = ['satisfacao', 'comunicacao', 'intimidade', 'confianca', 'tempo_qualidade', 'suporte', 'valores', 'vida_social', 'metas']
     let score = 0
     let count = 0
@@ -214,13 +205,16 @@ export default function Quiz() {
       }
     })
 
+    // Penalizar conflitos
     if (answers.conflitos && Array.isArray(answers.conflitos)) {
       score -= (answers.conflitos as string[]).length * 2
     }
 
+    // Bonus para planos alinhados
     if (answers.planos === 'Sim') score += 10
     else if (answers.planos === 'Parcialmente') score += 5
 
+    // Normalizar para 0-100
     const finalScore = Math.max(0, Math.min(100, Math.round((score / (count * 10 + 15)) * 100)))
 
     let category = ''
@@ -232,18 +226,22 @@ export default function Quiz() {
     setShowResult(true)
   }
 
+  // TELA INICIAL - PÁGINA DE VENDA APELATIVA E PERSUASIVA
   if (!started) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-rose-50 flex items-center justify-center p-4">
         <div className="max-w-4xl w-full bg-white rounded-3xl shadow-2xl p-6 sm:p-8 md:p-12 text-center animate-fade-in relative overflow-hidden">
+          {/* Efeitos de fundo premium */}
           <div className="absolute -top-20 -right-20 w-40 h-40 bg-pink-300 rounded-full blur-3xl opacity-30 animate-pulse"></div>
           <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-purple-300 rounded-full blur-3xl opacity-30 animate-pulse delay-1000"></div>
           
           <div className="relative z-10">
+            {/* Badge de urgência */}
             <div className="inline-block bg-gradient-to-r from-pink-500 to-rose-500 text-white text-xs sm:text-sm font-bold px-4 sm:px-6 py-2 rounded-full mb-4 sm:mb-6 shadow-lg animate-pulse">
               ⚡ DIAGNÓSTICO GRATUITO • 3 MINUTOS
             </div>
             
+            {/* Título impactante */}
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-4 sm:mb-6 leading-tight px-2">
               A resposta para{' '}
               <span className="bg-gradient-to-r from-pink-500 via-purple-600 to-rose-500 bg-clip-text text-transparent break-words">
@@ -251,6 +249,7 @@ export default function Quiz() {
               </span>
             </h1>
             
+            {/* Subtítulo direto */}
             <p className="text-xl sm:text-2xl md:text-3xl text-gray-700 mb-3 sm:mb-4 font-bold px-2">
               Está em 15 perguntas diretas
             </p>
@@ -259,6 +258,7 @@ export default function Quiz() {
               Descubra se você está construindo algo sólido ou apenas evitando uma conversa difícil
             </p>
 
+            {/* SEÇÃO DE PESQUISA CIENTÍFICA - ALERTA VERMELHO */}
             <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl p-4 sm:p-6 md:p-8 mb-6 sm:mb-8 text-left shadow-xl border-2 border-red-200">
               <div className="flex items-start sm:items-center gap-3 mb-4 sm:mb-6">
                 <AlertTriangle className="w-8 h-8 sm:w-10 sm:h-10 text-red-600 flex-shrink-0" />
@@ -307,6 +307,7 @@ export default function Quiz() {
               </div>
             </div>
 
+            {/* ESTUDOS DE CASO - PROVAS SOCIAIS */}
             <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-4 sm:p-6 md:p-8 mb-6 sm:mb-8 text-left shadow-xl border-2 border-green-200">
               <div className="flex items-start sm:items-center gap-3 mb-4 sm:mb-6">
                 <CheckCircle className="w-8 h-8 sm:w-10 sm:h-10 text-green-600 flex-shrink-0" />
@@ -316,6 +317,7 @@ export default function Quiz() {
               </div>
 
               <div className="space-y-4 sm:space-y-5">
+                {/* Caso 1 */}
                 <div className="bg-white rounded-xl p-4 sm:p-6 shadow-md border-l-4 border-green-500">
                   <div className="flex items-start gap-3 sm:gap-4 mb-3">
                     <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-pink-400 to-rose-500 flex-shrink-0"></div>
@@ -335,6 +337,7 @@ export default function Quiz() {
                   </div>
                 </div>
 
+                {/* Caso 2 */}
                 <div className="bg-white rounded-xl p-4 sm:p-6 shadow-md border-l-4 border-blue-500">
                   <div className="flex items-start gap-3 sm:gap-4 mb-3">
                     <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex-shrink-0"></div>
@@ -353,6 +356,7 @@ export default function Quiz() {
                   </div>
                 </div>
 
+                {/* Caso 3 */}
                 <div className="bg-white rounded-xl p-4 sm:p-6 shadow-md border-l-4 border-purple-500">
                   <div className="flex items-start gap-3 sm:gap-4 mb-3">
                     <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 flex-shrink-0"></div>
@@ -381,6 +385,7 @@ export default function Quiz() {
               </div>
             </div>
             
+            {/* Box de valor - O que você vai descobrir */}
             <div className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl p-4 sm:p-6 md:p-8 mb-6 sm:mb-8 text-left shadow-lg border-2 border-pink-200">
               <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6 text-center flex items-center justify-center gap-2 flex-wrap">
                 <Sparkles className="w-6 h-6 sm:w-7 sm:h-7 text-pink-500 flex-shrink-0" />
@@ -420,6 +425,7 @@ export default function Quiz() {
               </div>
             </div>
             
+            {/* Prova social */}
             <div className="bg-white rounded-xl p-4 sm:p-6 mb-6 sm:mb-8 shadow-md border border-gray-200">
               <div className="flex items-center justify-center gap-2 mb-3 flex-wrap">
                 <div className="flex -space-x-2">
@@ -434,6 +440,7 @@ export default function Quiz() {
               </p>
             </div>
             
+            {/* CTA Principal */}
             <button
               onClick={() => setStarted(true)}
               className="w-full bg-gradient-to-r from-pink-500 via-rose-500 to-purple-600 hover:from-pink-600 hover:via-rose-600 hover:to-purple-700 text-white font-extrabold text-base sm:text-xl md:text-2xl py-4 sm:py-6 px-6 sm:px-8 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-xl mb-4 sm:mb-6 relative overflow-hidden group"
@@ -442,6 +449,7 @@ export default function Quiz() {
               <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000"></div>
             </button>
             
+            {/* Garantias e benefícios */}
             <div className="flex items-center justify-center gap-3 sm:gap-6 flex-wrap text-xs sm:text-sm text-gray-600">
               <span className="flex items-center gap-2">
                 <span className="text-green-500 font-bold text-base sm:text-lg">✓</span>
@@ -457,6 +465,7 @@ export default function Quiz() {
               </span>
             </div>
             
+            {/* Nota final */}
             <p className="text-xs sm:text-sm text-gray-500 mt-4 sm:mt-6 italic px-2">
               Após o score gratuito, você pode optar pelo relatório detalhado com ações práticas personalizadas
             </p>
@@ -499,7 +508,7 @@ export default function Quiz() {
               <div>
                 <h3 className="font-bold text-base sm:text-lg text-gray-800 mb-2">Análise Inicial do Seu Score</h3>
                 <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
-                  {answers.score !== undefined && getScoreAnalysis(answers.score as number)}
+                  {getScoreAnalysis(answers.score as number)}
                 </p>
               </div>
             </div>
@@ -533,6 +542,7 @@ export default function Quiz() {
               </li>
             </ul>
 
+            {/* INVESTIMENTO & GARANTIA */}
             <div className="bg-white rounded-xl p-4 sm:p-5 mb-4 sm:mb-6 border-2 border-pink-200 shadow-sm">
               <h4 className="font-bold text-base sm:text-lg text-gray-800 mb-3">💰 INVESTIMENTO & GARANTIA:</h4>
               <p className="text-sm sm:text-base text-gray-700 mb-2">
@@ -553,4 +563,249 @@ export default function Quiz() {
               href="https://pay.kiwify.com.br/LnKRt9G"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block w-full bg-gradient-to-r from
+              className="inline-block w-full bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white font-bold text-base sm:text-lg py-3 sm:py-4 px-6 sm:px-8 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl break-words"
+            >
+              INVESTIR NO MEU RELACIONAMENTO (R$ 57)
+            </a>
+            <p className="text-xs text-gray-500 mt-3">
+              Acesso imediato • Pagamento 100% seguro
+            </p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  const question = questions[currentQuestion]
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-rose-50 flex items-center justify-center p-4">
+      {showMotivationalMessage && (
+        <div className="fixed top-4 sm:top-8 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 sm:px-8 py-3 sm:py-4 rounded-2xl shadow-2xl z-50 animate-slide-down max-w-[90%] sm:max-w-md text-center">
+          <p className="font-semibold text-sm sm:text-lg">{motivationalMessage}</p>
+        </div>
+      )}
+      <div className="max-w-2xl w-full bg-white rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 animate-fade-in">
+        {/* IMAGEM ACIMA DA PERGUNTA */}
+        <div className="mb-4 sm:mb-6 rounded-2xl overflow-hidden shadow-lg">
+          <img 
+            src={question.image} 
+            alt={`Ilustração para: ${question.question}`}
+            className="w-full h-48 sm:h-64 object-cover"
+          />
+        </div>
+
+        <div className="mb-6 sm:mb-8">
+          <div className="flex justify-between items-center mb-4 sm:mb-6 gap-2">
+            <span className="text-xs sm:text-sm font-medium text-gray-600 bg-pink-50 px-3 sm:px-4 py-2 rounded-full whitespace-nowrap">
+              Pergunta {currentQuestion + 1} de {questions.length}
+            </span>
+            <div className="w-24 sm:w-32 bg-gray-200 rounded-full h-2 sm:h-3 shadow-inner overflow-hidden">
+              <div 
+                className="bg-gradient-to-r from-pink-500 to-purple-600 h-2 sm:h-3 rounded-full transition-all duration-500 ease-out"
+                style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
+              ></div>
+            </div>
+          </div>
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 leading-tight break-words">{question.question}</h2>
+        </div>
+
+        <div className="mb-8 sm:mb-10">
+          {question.type === 'select' && (
+            <select
+              value={answers[question.key] || ''}
+              onChange={(e) => handleAnswer(question.key, e.target.value)}
+              className="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-pink-200 focus:border-pink-500 transition-all duration-300 text-base sm:text-lg bg-gray-50 hover:bg-white"
+            >
+              <option value="">Selecione...</option>
+              {question.options.map(option => (
+                <option key={option} value={option}>{option}</option>
+              ))}
+            </select>
+          )}
+
+          {question.type === 'range' && (
+            <div className="space-y-4">
+              <input
+                type="range"
+                min={question.min}
+                max={question.max}
+                value={answers[question.key] || question.min}
+                onChange={(e) => handleAnswer(question.key, e.target.value)}
+                className="w-full h-2 sm:h-3 bg-gradient-to-r from-pink-200 to-purple-200 rounded-lg appearance-none cursor-pointer slider-thumb"
+              />
+              <div className="flex justify-between text-xs sm:text-sm text-gray-500 px-2">
+                <span className="font-medium">{question.min}</span>
+                <span className="font-bold text-xl sm:text-2xl text-pink-500 animate-pulse">
+                  {answers[question.key] || question.min}
+                </span>
+                <span className="font-medium">{question.max}</span>
+              </div>
+            </div>
+          )}
+
+          {question.type === 'number' && (
+            <input
+              type="number"
+              min={question.min}
+              max={question.max}
+              value={answers[question.key] || ''}
+              onChange={(e) => handleAnswer(question.key, e.target.value)}
+              placeholder="Digite o número..."
+              className="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-pink-200 focus:border-pink-500 transition-all duration-300 text-base sm:text-lg bg-gray-50 hover:bg-white"
+            />
+          )}
+
+          {question.type === 'multiselect' && (
+            <div className="space-y-3">
+              {question.options.map(option => (
+                <label 
+                  key={option} 
+                  className="flex items-center p-3 sm:p-4 border-2 border-gray-200 rounded-xl hover:border-pink-300 hover:bg-pink-50 transition-all duration-300 cursor-pointer group"
+                >
+                  <input
+                    type="checkbox"
+                    checked={(answers[question.key] as string[])?.includes(option) || false}
+                    onChange={(e) => {
+                      const current = (answers[question.key] as string[]) || []
+                      if (e.target.checked) {
+                        handleAnswer(question.key, [...current, option])
+                      } else {
+                        handleAnswer(question.key, current.filter(item => item !== option))
+                      }
+                    }}
+                    className="w-4 h-4 sm:w-5 sm:h-5 text-pink-500 border-2 border-gray-300 rounded focus:ring-2 focus:ring-pink-500 mr-3 flex-shrink-0"
+                  />
+                  <span className="text-sm sm:text-base text-gray-700 font-medium group-hover:text-pink-600 transition-colors break-words">
+                    {option}
+                  </span>
+                </label>
+              ))}
+            </div>
+          )}
+
+          {question.type === 'text' && (
+            <textarea
+              value={answers[question.key] || ''}
+              onChange={(e) => handleAnswer(question.key, e.target.value)}
+              placeholder="Digite sua resposta..."
+              rows={5}
+              className="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-pink-200 focus:border-pink-500 transition-all duration-300 text-base sm:text-lg bg-gray-50 hover:bg-white resize-none"
+            />
+          )}
+        </div>
+
+        <div className="flex justify-between items-center pt-4 sm:pt-6 border-t-2 border-gray-100 gap-2">
+          <button
+            onClick={prevQuestion}
+            disabled={currentQuestion === 0}
+            className="flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base text-gray-600 font-semibold rounded-xl hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 hover:scale-105"
+          >
+            <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span className="hidden sm:inline">Anterior</span>
+          </button>
+          <button
+            onClick={nextQuestion}
+            disabled={!answers[question.key] || (question.type === 'multiselect' && (!answers[question.key] || (answers[question.key] as string[]).length === 0))}
+            className="flex items-center gap-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 disabled:from-gray-300 disabled:to-gray-400 text-white font-bold py-2 sm:py-3 px-4 sm:px-8 rounded-xl transition-all duration-300 disabled:cursor-not-allowed transform hover:scale-105 hover:shadow-xl disabled:hover:scale-100 disabled:hover:shadow-none text-sm sm:text-base"
+          >
+            <span className="break-words">{currentQuestion === questions.length - 1 ? 'Ver Resultado' : 'Próxima'}</span>
+            <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
+          </button>
+        </div>
+      </div>
+
+      <style jsx global>{`
+        @keyframes fade-in {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes slide-down {
+          from {
+            opacity: 0;
+            transform: translate(-50%, -100%);
+          }
+          to {
+            opacity: 1;
+            transform: translate(-50%, 0);
+          }
+        }
+
+        @keyframes scale-in {
+          from {
+            transform: scale(0.5);
+            opacity: 0;
+          }
+          to {
+            transform: scale(1);
+            opacity: 1;
+          }
+        }
+
+        @keyframes bounce-slow {
+          0%, 100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-10px);
+          }
+        }
+
+        .animate-fade-in {
+          animation: fade-in 0.6s ease-out;
+        }
+
+        .animate-slide-down {
+          animation: slide-down 0.5s ease-out;
+        }
+
+        .animate-scale-in {
+          animation: scale-in 0.8s ease-out;
+        }
+
+        .animate-bounce-slow {
+          animation: bounce-slow 2s ease-in-out infinite;
+        }
+
+        .slider-thumb::-webkit-slider-thumb {
+          appearance: none;
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #ec4899, #8b5cf6);
+          cursor: pointer;
+          box-shadow: 0 2px 8px rgba(236, 72, 153, 0.4);
+          transition: all 0.3s ease;
+        }
+
+        .slider-thumb::-webkit-slider-thumb:hover {
+          transform: scale(1.2);
+          box-shadow: 0 4px 12px rgba(236, 72, 153, 0.6);
+        }
+
+        .slider-thumb::-moz-range-thumb {
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #ec4899, #8b5cf6);
+          cursor: pointer;
+          border: none;
+          box-shadow: 0 2px 8px rgba(236, 72, 153, 0.4);
+          transition: all 0.3s ease;
+        }
+
+        .slider-thumb::-moz-range-thumb:hover {
+          transform: scale(1.2);
+          box-shadow: 0 4px 12px rgba(236, 72, 153, 0.6);
+        }
+      `}</style>
+    </div>
+  )
+}
