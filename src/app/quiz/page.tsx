@@ -10,7 +10,18 @@ interface Answers {
   category?: string
 }
 
-const questions = [
+interface Question {
+  id: number
+  type: 'select' | 'number' | 'range' | 'multiselect' | 'text'
+  question: string
+  options?: string[]
+  min?: number
+  max?: number
+  key: string
+  image: string
+}
+
+const questions: Question[] = [
   {
     id: 1,
     type: 'select',
@@ -150,7 +161,7 @@ export default function Quiz() {
   const [motivationalMessage, setMotivationalMessage] = useState('')
 
   const motivationalQuestions = [2, 6, 9, 13] // índices 0-based para perguntas 3,7,10,14
-  const messages = {
+  const messages: Record<number, string> = {
     2: "💕 Estamos aqui pra te ajudar a encontrar mais satisfação!",
     6: "🌟 Planos alinhados são fundamentais! Estamos te guiando.",
     9: "🤗 Suporte emocional é essencial. Conte conosco!",
@@ -165,7 +176,7 @@ export default function Quiz() {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1)
       if (motivationalQuestions.includes(currentQuestion + 1)) {
-        setMotivationalMessage(messages[currentQuestion + 1 as keyof typeof messages])
+        setMotivationalMessage(messages[currentQuestion + 1])
         setShowMotivationalMessage(true)
         setTimeout(() => setShowMotivationalMessage(false), 3000)
       }
@@ -508,7 +519,7 @@ export default function Quiz() {
               <div>
                 <h3 className="font-bold text-base sm:text-lg text-gray-800 mb-2">Análise Inicial do Seu Score</h3>
                 <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
-                  {getScoreAnalysis(answers.score as number)}
+                  {answers.score !== undefined && getScoreAnalysis(answers.score as number)}
                 </p>
               </div>
             </div>
@@ -548,264 +559,4 @@ export default function Quiz() {
               <p className="text-sm sm:text-base text-gray-700 mb-2">
                 <strong>Valor: R$ 57</strong> (ou 2x de R$ 28,50)
               </p>
-              <p className="text-sm sm:text-base text-gray-700 mb-4">
-                <strong>Formas de pagamento:</strong> Cartão, PIX, Boleto
-              </p>
-              <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-3 sm:p-4 border border-green-200">
-                <p className="font-bold text-sm sm:text-base text-gray-800 mb-2">🛡️ GARANTIA INCONDICIONAL DE 7 DIAS</p>
-                <p className="text-xs sm:text-sm text-gray-700">
-                  Se em 1 semana você achar que o conteúdo não valeu o investimento, devolvemos 100% do seu dinheiro. Sem perguntas, sem burocracia.
-                </p>
-              </div>
-            </div>
-
-            <a
-              href="https://pay.kiwify.com.br/LnKRt9G"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block w-full bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white font-bold text-base sm:text-lg py-3 sm:py-4 px-6 sm:px-8 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl break-words"
-            >
-              INVESTIR NO MEU RELACIONAMENTO (R$ 57)
-            </a>
-            <p className="text-xs text-gray-500 mt-3">
-              Acesso imediato • Pagamento 100% seguro
-            </p>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  const question = questions[currentQuestion]
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-rose-50 flex items-center justify-center p-4">
-      {showMotivationalMessage && (
-        <div className="fixed top-4 sm:top-8 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 sm:px-8 py-3 sm:py-4 rounded-2xl shadow-2xl z-50 animate-slide-down max-w-[90%] sm:max-w-md text-center">
-          <p className="font-semibold text-sm sm:text-lg">{motivationalMessage}</p>
-        </div>
-      )}
-      <div className="max-w-2xl w-full bg-white rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 animate-fade-in">
-        {/* IMAGEM ACIMA DA PERGUNTA */}
-        <div className="mb-4 sm:mb-6 rounded-2xl overflow-hidden shadow-lg">
-          <img 
-            src={question.image} 
-            alt={`Ilustração para: ${question.question}`}
-            className="w-full h-48 sm:h-64 object-cover"
-          />
-        </div>
-
-        <div className="mb-6 sm:mb-8">
-          <div className="flex justify-between items-center mb-4 sm:mb-6 gap-2">
-            <span className="text-xs sm:text-sm font-medium text-gray-600 bg-pink-50 px-3 sm:px-4 py-2 rounded-full whitespace-nowrap">
-              Pergunta {currentQuestion + 1} de {questions.length}
-            </span>
-            <div className="w-24 sm:w-32 bg-gray-200 rounded-full h-2 sm:h-3 shadow-inner overflow-hidden">
-              <div 
-                className="bg-gradient-to-r from-pink-500 to-purple-600 h-2 sm:h-3 rounded-full transition-all duration-500 ease-out"
-                style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
-              ></div>
-            </div>
-          </div>
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 leading-tight break-words">{question.question}</h2>
-        </div>
-
-        <div className="mb-8 sm:mb-10">
-          {question.type === 'select' && (
-            <select
-              value={answers[question.key] || ''}
-              onChange={(e) => handleAnswer(question.key, e.target.value)}
-              className="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-pink-200 focus:border-pink-500 transition-all duration-300 text-base sm:text-lg bg-gray-50 hover:bg-white"
-            >
-              <option value="">Selecione...</option>
-              {question.options.map(option => (
-                <option key={option} value={option}>{option}</option>
-              ))}
-            </select>
-          )}
-
-          {question.type === 'range' && (
-            <div className="space-y-4">
-              <input
-                type="range"
-                min={question.min}
-                max={question.max}
-                value={answers[question.key] || question.min}
-                onChange={(e) => handleAnswer(question.key, e.target.value)}
-                className="w-full h-2 sm:h-3 bg-gradient-to-r from-pink-200 to-purple-200 rounded-lg appearance-none cursor-pointer slider-thumb"
-              />
-              <div className="flex justify-between text-xs sm:text-sm text-gray-500 px-2">
-                <span className="font-medium">{question.min}</span>
-                <span className="font-bold text-xl sm:text-2xl text-pink-500 animate-pulse">
-                  {answers[question.key] || question.min}
-                </span>
-                <span className="font-medium">{question.max}</span>
-              </div>
-            </div>
-          )}
-
-          {question.type === 'number' && (
-            <input
-              type="number"
-              min={question.min}
-              max={question.max}
-              value={answers[question.key] || ''}
-              onChange={(e) => handleAnswer(question.key, e.target.value)}
-              placeholder="Digite o número..."
-              className="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-pink-200 focus:border-pink-500 transition-all duration-300 text-base sm:text-lg bg-gray-50 hover:bg-white"
-            />
-          )}
-
-          {question.type === 'multiselect' && (
-            <div className="space-y-3">
-              {question.options.map(option => (
-                <label 
-                  key={option} 
-                  className="flex items-center p-3 sm:p-4 border-2 border-gray-200 rounded-xl hover:border-pink-300 hover:bg-pink-50 transition-all duration-300 cursor-pointer group"
-                >
-                  <input
-                    type="checkbox"
-                    checked={(answers[question.key] as string[])?.includes(option) || false}
-                    onChange={(e) => {
-                      const current = (answers[question.key] as string[]) || []
-                      if (e.target.checked) {
-                        handleAnswer(question.key, [...current, option])
-                      } else {
-                        handleAnswer(question.key, current.filter(item => item !== option))
-                      }
-                    }}
-                    className="w-4 h-4 sm:w-5 sm:h-5 text-pink-500 border-2 border-gray-300 rounded focus:ring-2 focus:ring-pink-500 mr-3 flex-shrink-0"
-                  />
-                  <span className="text-sm sm:text-base text-gray-700 font-medium group-hover:text-pink-600 transition-colors break-words">
-                    {option}
-                  </span>
-                </label>
-              ))}
-            </div>
-          )}
-
-          {question.type === 'text' && (
-            <textarea
-              value={answers[question.key] || ''}
-              onChange={(e) => handleAnswer(question.key, e.target.value)}
-              placeholder="Digite sua resposta..."
-              rows={5}
-              className="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-pink-200 focus:border-pink-500 transition-all duration-300 text-base sm:text-lg bg-gray-50 hover:bg-white resize-none"
-            />
-          )}
-        </div>
-
-        <div className="flex justify-between items-center pt-4 sm:pt-6 border-t-2 border-gray-100 gap-2">
-          <button
-            onClick={prevQuestion}
-            disabled={currentQuestion === 0}
-            className="flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base text-gray-600 font-semibold rounded-xl hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 hover:scale-105"
-          >
-            <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-            <span className="hidden sm:inline">Anterior</span>
-          </button>
-          <button
-            onClick={nextQuestion}
-            disabled={!answers[question.key] || (question.type === 'multiselect' && (!answers[question.key] || (answers[question.key] as string[]).length === 0))}
-            className="flex items-center gap-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 disabled:from-gray-300 disabled:to-gray-400 text-white font-bold py-2 sm:py-3 px-4 sm:px-8 rounded-xl transition-all duration-300 disabled:cursor-not-allowed transform hover:scale-105 hover:shadow-xl disabled:hover:scale-100 disabled:hover:shadow-none text-sm sm:text-base"
-          >
-            <span className="break-words">{currentQuestion === questions.length - 1 ? 'Ver Resultado' : 'Próxima'}</span>
-            <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
-          </button>
-        </div>
-      </div>
-
-      <style jsx global>{`
-        @keyframes fade-in {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes slide-down {
-          from {
-            opacity: 0;
-            transform: translate(-50%, -100%);
-          }
-          to {
-            opacity: 1;
-            transform: translate(-50%, 0);
-          }
-        }
-
-        @keyframes scale-in {
-          from {
-            transform: scale(0.5);
-            opacity: 0;
-          }
-          to {
-            transform: scale(1);
-            opacity: 1;
-          }
-        }
-
-        @keyframes bounce-slow {
-          0%, 100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-10px);
-          }
-        }
-
-        .animate-fade-in {
-          animation: fade-in 0.6s ease-out;
-        }
-
-        .animate-slide-down {
-          animation: slide-down 0.5s ease-out;
-        }
-
-        .animate-scale-in {
-          animation: scale-in 0.8s ease-out;
-        }
-
-        .animate-bounce-slow {
-          animation: bounce-slow 2s ease-in-out infinite;
-        }
-
-        .slider-thumb::-webkit-slider-thumb {
-          appearance: none;
-          width: 24px;
-          height: 24px;
-          border-radius: 50%;
-          background: linear-gradient(135deg, #ec4899, #8b5cf6);
-          cursor: pointer;
-          box-shadow: 0 2px 8px rgba(236, 72, 153, 0.4);
-          transition: all 0.3s ease;
-        }
-
-        .slider-thumb::-webkit-slider-thumb:hover {
-          transform: scale(1.2);
-          box-shadow: 0 4px 12px rgba(236, 72, 153, 0.6);
-        }
-
-        .slider-thumb::-moz-range-thumb {
-          width: 24px;
-          height: 24px;
-          border-radius: 50%;
-          background: linear-gradient(135deg, #ec4899, #8b5cf6);
-          cursor: pointer;
-          border: none;
-          box-shadow: 0 2px 8px rgba(236, 72, 153, 0.4);
-          transition: all 0.3s ease;
-        }
-
-        .slider-thumb::-moz-range-thumb:hover {
-          transform: scale(1.2);
-          box-shadow: 0 4px 12px rgba(236, 72, 153, 0.6);
-        }
-      `}</style>
-    </div>
-  )
-}
+              <p className="text-sm sm:text-base text-gray-700 mb
