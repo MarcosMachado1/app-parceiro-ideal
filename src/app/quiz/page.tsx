@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { ArrowLeft, ArrowRight, Heart, Sparkles, TrendingDown, Users, AlertTriangle, CheckCircle } from 'lucide-react'
-import Image from 'next/image'
 
 interface Answers {
   [key: string]: string | number | string[] | undefined
@@ -160,7 +159,7 @@ export default function Quiz() {
   const [showMotivationalMessage, setShowMotivationalMessage] = useState(false)
   const [motivationalMessage, setMotivationalMessage] = useState('')
 
-  const motivationalQuestions = [2, 6, 9, 13] // índices 0-based para perguntas 3,7,10,14
+  const motivationalQuestions = [2, 6, 9, 13]
   const messages: Record<number, string> = {
     2: "💕 Estamos aqui pra te ajudar a encontrar mais satisfação!",
     6: "🌟 Planos alinhados são fundamentais! Estamos te guiando.",
@@ -204,7 +203,6 @@ export default function Quiz() {
   }
 
   const calculateResult = () => {
-    // Cálculo simples do score baseado nas respostas numéricas
     const numericKeys = ['satisfacao', 'comunicacao', 'intimidade', 'confianca', 'tempo_qualidade', 'suporte', 'valores', 'vida_social', 'metas']
     let score = 0
     let count = 0
@@ -216,16 +214,13 @@ export default function Quiz() {
       }
     })
 
-    // Penalizar conflitos
     if (answers.conflitos && Array.isArray(answers.conflitos)) {
       score -= (answers.conflitos as string[]).length * 2
     }
 
-    // Bonus para planos alinhados
     if (answers.planos === 'Sim') score += 10
     else if (answers.planos === 'Parcialmente') score += 5
 
-    // Normalizar para 0-100
     const finalScore = Math.max(0, Math.min(100, Math.round((score / (count * 10 + 15)) * 100)))
 
     let category = ''
@@ -237,22 +232,18 @@ export default function Quiz() {
     setShowResult(true)
   }
 
-  // TELA INICIAL - PÁGINA DE VENDA APELATIVA E PERSUASIVA
   if (!started) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-rose-50 flex items-center justify-center p-4">
         <div className="max-w-4xl w-full bg-white rounded-3xl shadow-2xl p-6 sm:p-8 md:p-12 text-center animate-fade-in relative overflow-hidden">
-          {/* Efeitos de fundo premium */}
           <div className="absolute -top-20 -right-20 w-40 h-40 bg-pink-300 rounded-full blur-3xl opacity-30 animate-pulse"></div>
           <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-purple-300 rounded-full blur-3xl opacity-30 animate-pulse delay-1000"></div>
           
           <div className="relative z-10">
-            {/* Badge de urgência */}
             <div className="inline-block bg-gradient-to-r from-pink-500 to-rose-500 text-white text-xs sm:text-sm font-bold px-4 sm:px-6 py-2 rounded-full mb-4 sm:mb-6 shadow-lg animate-pulse">
               ⚡ DIAGNÓSTICO GRATUITO • 3 MINUTOS
             </div>
             
-            {/* Título impactante */}
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-4 sm:mb-6 leading-tight px-2">
               A resposta para{' '}
               <span className="bg-gradient-to-r from-pink-500 via-purple-600 to-rose-500 bg-clip-text text-transparent break-words">
@@ -260,7 +251,6 @@ export default function Quiz() {
               </span>
             </h1>
             
-            {/* Subtítulo direto */}
             <p className="text-xl sm:text-2xl md:text-3xl text-gray-700 mb-3 sm:mb-4 font-bold px-2">
               Está em 15 perguntas diretas
             </p>
@@ -269,7 +259,6 @@ export default function Quiz() {
               Descubra se você está construindo algo sólido ou apenas evitando uma conversa difícil
             </p>
 
-            {/* SEÇÃO DE PESQUISA CIENTÍFICA - ALERTA VERMELHO */}
             <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl p-4 sm:p-6 md:p-8 mb-6 sm:mb-8 text-left shadow-xl border-2 border-red-200">
               <div className="flex items-start sm:items-center gap-3 mb-4 sm:mb-6">
                 <AlertTriangle className="w-8 h-8 sm:w-10 sm:h-10 text-red-600 flex-shrink-0" />
@@ -318,7 +307,6 @@ export default function Quiz() {
               </div>
             </div>
 
-            {/* ESTUDOS DE CASO - PROVAS SOCIAIS */}
             <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-4 sm:p-6 md:p-8 mb-6 sm:mb-8 text-left shadow-xl border-2 border-green-200">
               <div className="flex items-start sm:items-center gap-3 mb-4 sm:mb-6">
                 <CheckCircle className="w-8 h-8 sm:w-10 sm:h-10 text-green-600 flex-shrink-0" />
@@ -328,7 +316,6 @@ export default function Quiz() {
               </div>
 
               <div className="space-y-4 sm:space-y-5">
-                {/* Caso 1 */}
                 <div className="bg-white rounded-xl p-4 sm:p-6 shadow-md border-l-4 border-green-500">
                   <div className="flex items-start gap-3 sm:gap-4 mb-3">
                     <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-pink-400 to-rose-500 flex-shrink-0"></div>
@@ -348,7 +335,6 @@ export default function Quiz() {
                   </div>
                 </div>
 
-                {/* Caso 2 */}
                 <div className="bg-white rounded-xl p-4 sm:p-6 shadow-md border-l-4 border-blue-500">
                   <div className="flex items-start gap-3 sm:gap-4 mb-3">
                     <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex-shrink-0"></div>
@@ -367,7 +353,6 @@ export default function Quiz() {
                   </div>
                 </div>
 
-                {/* Caso 3 */}
                 <div className="bg-white rounded-xl p-4 sm:p-6 shadow-md border-l-4 border-purple-500">
                   <div className="flex items-start gap-3 sm:gap-4 mb-3">
                     <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 flex-shrink-0"></div>
@@ -396,7 +381,6 @@ export default function Quiz() {
               </div>
             </div>
             
-            {/* Box de valor - O que você vai descobrir */}
             <div className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl p-4 sm:p-6 md:p-8 mb-6 sm:mb-8 text-left shadow-lg border-2 border-pink-200">
               <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6 text-center flex items-center justify-center gap-2 flex-wrap">
                 <Sparkles className="w-6 h-6 sm:w-7 sm:h-7 text-pink-500 flex-shrink-0" />
@@ -436,7 +420,6 @@ export default function Quiz() {
               </div>
             </div>
             
-            {/* Prova social */}
             <div className="bg-white rounded-xl p-4 sm:p-6 mb-6 sm:mb-8 shadow-md border border-gray-200">
               <div className="flex items-center justify-center gap-2 mb-3 flex-wrap">
                 <div className="flex -space-x-2">
@@ -451,7 +434,6 @@ export default function Quiz() {
               </p>
             </div>
             
-            {/* CTA Principal */}
             <button
               onClick={() => setStarted(true)}
               className="w-full bg-gradient-to-r from-pink-500 via-rose-500 to-purple-600 hover:from-pink-600 hover:via-rose-600 hover:to-purple-700 text-white font-extrabold text-base sm:text-xl md:text-2xl py-4 sm:py-6 px-6 sm:px-8 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl shadow-xl mb-4 sm:mb-6 relative overflow-hidden group"
@@ -460,7 +442,6 @@ export default function Quiz() {
               <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000"></div>
             </button>
             
-            {/* Garantias e benefícios */}
             <div className="flex items-center justify-center gap-3 sm:gap-6 flex-wrap text-xs sm:text-sm text-gray-600">
               <span className="flex items-center gap-2">
                 <span className="text-green-500 font-bold text-base sm:text-lg">✓</span>
@@ -476,7 +457,6 @@ export default function Quiz() {
               </span>
             </div>
             
-            {/* Nota final */}
             <p className="text-xs sm:text-sm text-gray-500 mt-4 sm:mt-6 italic px-2">
               Após o score gratuito, você pode optar pelo relatório detalhado com ações práticas personalizadas
             </p>
@@ -553,10 +533,24 @@ export default function Quiz() {
               </li>
             </ul>
 
-            {/* INVESTIMENTO & GARANTIA */}
             <div className="bg-white rounded-xl p-4 sm:p-5 mb-4 sm:mb-6 border-2 border-pink-200 shadow-sm">
               <h4 className="font-bold text-base sm:text-lg text-gray-800 mb-3">💰 INVESTIMENTO & GARANTIA:</h4>
               <p className="text-sm sm:text-base text-gray-700 mb-2">
                 <strong>Valor: R$ 57</strong> (ou 2x de R$ 28,50)
               </p>
-              <p className="text-sm sm:text-base text-gray-700 mb
+              <p className="text-sm sm:text-base text-gray-700 mb-4">
+                <strong>Formas de pagamento:</strong> Cartão, PIX, Boleto
+              </p>
+              <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-3 sm:p-4 border border-green-200">
+                <p className="font-bold text-sm sm:text-base text-gray-800 mb-2">🛡️ GARANTIA INCONDICIONAL DE 7 DIAS</p>
+                <p className="text-xs sm:text-sm text-gray-700">
+                  Se em 1 semana você achar que o conteúdo não valeu o investimento, devolvemos 100% do seu dinheiro. Sem perguntas, sem burocracia.
+                </p>
+              </div>
+            </div>
+
+            <a
+              href="https://pay.kiwify.com.br/LnKRt9G"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block w-full bg-gradient-to-r from
