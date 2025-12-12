@@ -618,9 +618,9 @@ export default function Quiz() {
               className="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-pink-200 focus:border-pink-500 transition-all duration-300 text-base sm:text-lg bg-gray-50 hover:bg-white"
             >
               <option value="">Selecione...</option>
-              {question.options.map(option => (
-                <option key={option} value={option}>{option}</option>
-              ))}
+              {question.options?.map(option => (
+  <option key={option} value={option}>{option}</option>
+))}
             </select>
           )}
 
