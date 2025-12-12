@@ -5,7 +5,7 @@ import { ArrowLeft, ArrowRight, Heart, Sparkles, TrendingDown, Users, AlertTrian
 import Image from 'next/image'
 
 interface Answers {
-  [key: string]: string | number | string[]
+  [key: string]: string | number | string[] | undefined
   score?: number
   category?: string
 }
