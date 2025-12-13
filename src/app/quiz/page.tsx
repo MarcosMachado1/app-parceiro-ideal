@@ -539,7 +539,7 @@ export default function Quiz() {
 
           {question.type === 'multiselect' && (
             <div className="space-y-3">
-              {question.options.map(option => (
+              {question.options?.map(option => (
                 <label 
                   key={option} 
                   className="flex items-center p-4 border-2 border-gray-300 rounded-xl hover:border-blue-400 hover:bg-blue-50 transition-all duration-300 cursor-pointer shadow-sm"
