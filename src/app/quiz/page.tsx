@@ -499,7 +499,7 @@ export default function Quiz() {
               className="w-full p-4 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-base sm:text-lg bg-white shadow-sm hover:border-blue-400"
             >
               <option value="">Selecione...</option>
-              {question.options.map?(option => (
+              {question.options.?map(option => (
                 <option key={option} value={option}>{option}</option>
               ))}
             </select>
