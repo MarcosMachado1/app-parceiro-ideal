@@ -226,87 +226,151 @@ export default function Quiz() {
     setShowResult(true)
   }
 
-  // TELA INICIAL - REDESENHADA PARA CONVERSÃO MÁXIMA
+  // TELA INICIAL - DESIGN PREMIUM
   if (!started) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center p-4 sm:p-6">
-        <div className="max-w-3xl w-full text-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex items-center justify-center p-4 sm:p-6 relative overflow-hidden">
+        
+        {/* Elementos decorativos de fundo */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
+          <div className="absolute top-40 right-10 w-72 h-72 bg-purple-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+          <div className="absolute -bottom-8 left-1/2 w-72 h-72 bg-pink-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
+        </div>
+
+        <div className="max-w-4xl w-full text-center relative z-10">
           
-          {/* Ícone Analítico */}
-          <div className="mb-6 sm:mb-8">
-            <BarChart3 className="w-12 h-12 sm:w-16 sm:h-16 text-blue-600 mx-auto" />
+          {/* Badge Premium */}
+          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-full text-sm font-semibold mb-6 shadow-lg">
+            <Sparkles className="w-4 h-4" />
+            <span>Metodologia Validada • +10.000 Avaliações</span>
           </div>
           
-          {/* Título (H1) */}
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight px-2">
-            Traduza sua dúvida em dados.
+          {/* Ícone Premium com gradiente */}
+          <div className="mb-8 relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur-2xl opacity-20 w-24 h-24 mx-auto"></div>
+            <div className="relative bg-gradient-to-br from-blue-600 to-purple-600 w-20 h-20 sm:w-24 sm:h-24 rounded-2xl mx-auto flex items-center justify-center shadow-2xl transform hover:scale-105 transition-transform duration-300">
+              <BarChart3 className="w-10 h-10 sm:w-12 sm:h-12 text-white" />
+            </div>
+          </div>
+          
+          {/* Título Premium */}
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight px-2">
+            <span className="bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent">
+              Traduza sua dúvida em dados.
+            </span>
           </h1>
           
-          {/* Subtítulo (H2) */}
-          <h2 className="text-lg sm:text-xl md:text-2xl text-gray-700 mb-8 sm:mb-12 font-medium px-2 leading-relaxed">
-            15 perguntas diretas. Um score de compatibilidade (0-100). Clareza, finalmente.
+          {/* Subtítulo elegante */}
+          <h2 className="text-lg sm:text-xl md:text-2xl text-gray-600 mb-12 font-medium px-2 leading-relaxed max-w-3xl mx-auto">
+            15 perguntas diretas. Um score de compatibilidade (0-100). <span className="text-blue-600 font-semibold">Clareza, finalmente.</span>
           </h2>
           
-          {/* Bullet Points */}
-          <div className="mb-10 sm:mb-14 space-y-4 sm:space-y-5 max-w-2xl mx-auto">
-            <div className="flex items-center justify-center gap-3 text-base sm:text-lg text-gray-800">
-              <span className="text-blue-600 font-bold text-xl">✓</span>
-              <span>Análise baseada em valores, comunicação e futuro.</span>
+          {/* Cards de benefícios com design premium */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-12 max-w-4xl mx-auto">
+            <div className="bg-white/80 backdrop-blur-sm border border-gray-200 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mb-4 mx-auto">
+                <CheckCircle className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="font-bold text-gray-900 mb-2 text-base sm:text-lg">Análise Profunda</h3>
+              <p className="text-sm text-gray-600">Baseada em valores, comunicação e futuro compartilhado.</p>
             </div>
-            <div className="flex items-center justify-center gap-3 text-base sm:text-lg text-gray-800">
-              <span className="text-blue-600 font-bold text-xl">✓</span>
-              <span>Resultado imediato. Sem cadastro.</span>
+            
+            <div className="bg-white/80 backdrop-blur-sm border border-gray-200 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mb-4 mx-auto">
+                <Sparkles className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="font-bold text-gray-900 mb-2 text-base sm:text-lg">Resultado Imediato</h3>
+              <p className="text-sm text-gray-600">Sem cadastro. Sem burocracia. Direto ao ponto.</p>
             </div>
-            <div className="flex items-center justify-center gap-3 text-base sm:text-lg text-gray-800">
-              <span className="text-blue-600 font-bold text-xl">✓</span>
-              <span>Diagnóstico grátis. Plano de ação opcional.</span>
+            
+            <div className="bg-white/80 backdrop-blur-sm border border-gray-200 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+              <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl flex items-center justify-center mb-4 mx-auto">
+                <BarChart3 className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="font-bold text-gray-900 mb-2 text-base sm:text-lg">Diagnóstico Grátis</h3>
+              <p className="text-sm text-gray-600">Plano de ação personalizado opcional.</p>
             </div>
           </div>
           
-          {/* CTA Principal */}
-          <button
-            onClick={() => setStarted(true)}
-            className="w-full max-w-xl mx-auto bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg sm:text-xl md:text-2xl py-5 sm:py-6 px-8 sm:px-10 rounded-lg transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl mb-6"
-          >
-            OBTER MEU DIAGNÓSTICO GRÁTIS
-          </button>
+          {/* CTA Premium com gradiente e efeitos */}
+          <div className="relative max-w-2xl mx-auto mb-8">
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl blur-xl opacity-30"></div>
+            <button
+              onClick={() => setStarted(true)}
+              className="relative w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold text-lg sm:text-xl md:text-2xl py-6 sm:py-7 px-8 sm:px-12 rounded-2xl transition-all duration-300 transform hover:scale-[1.02] shadow-2xl hover:shadow-3xl group"
+            >
+              <span className="flex items-center justify-center gap-3">
+                OBTER MEU DIAGNÓSTICO GRÁTIS
+                <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+              </span>
+            </button>
+          </div>
           
-          {/* Elemento de Confiança */}
-          <p className="text-sm sm:text-base text-gray-500 mt-6">
-            Mais de 10.000 avaliações realizadas • Metodologia validada
-          </p>
+          {/* Elemento de confiança premium */}
+          <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
+            <div className="flex -space-x-2">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 border-2 border-white"></div>
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 border-2 border-white"></div>
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-400 to-pink-600 border-2 border-white"></div>
+            </div>
+            <p className="font-medium">
+              <span className="text-gray-900 font-semibold">10.000+</span> pessoas já descobriram sua compatibilidade
+            </p>
+          </div>
         </div>
+
+        <style jsx>{`
+          @keyframes blob {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+          }
+          .animate-blob {
+            animation: blob 7s infinite;
+          }
+          .animation-delay-2000 {
+            animation-delay: 2s;
+          }
+          .animation-delay-4000 {
+            animation-delay: 4s;
+          }
+        `}</style>
       </div>
     )
   }
 
   if (showResult) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center p-4 sm:p-6">
-        <div className="max-w-2xl w-full bg-gray-50 rounded-2xl shadow-lg p-6 sm:p-8 md:p-12 text-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex items-center justify-center p-4 sm:p-6">
+        <div className="max-w-2xl w-full bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl p-6 sm:p-8 md:p-12 text-center border border-gray-200">
           
-          <BarChart3 className="w-14 h-14 sm:w-16 sm:h-16 text-blue-600 mx-auto mb-6" />
+          <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+            <BarChart3 className="w-8 h-8 text-white" />
+          </div>
           
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 to-blue-900 bg-clip-text text-transparent mb-6">
             Seu Resultado
           </h1>
           
           <div className="mb-8">
-            <div className="text-6xl sm:text-7xl md:text-8xl font-bold text-blue-600 mb-3">
+            <div className="text-7xl sm:text-8xl md:text-9xl font-extrabold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-3">
               {answers.score}
             </div>
             <div className="text-xl sm:text-2xl font-semibold text-gray-700 mb-6">{answers.category}</div>
-            <div className="w-full bg-gray-200 rounded-full h-3 sm:h-4 mb-6 overflow-hidden">
+            <div className="w-full bg-gray-200 rounded-full h-4 mb-6 overflow-hidden shadow-inner">
               <div 
-                className="bg-blue-600 h-3 sm:h-4 rounded-full transition-all duration-1000 ease-out"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 h-4 rounded-full transition-all duration-1000 ease-out shadow-lg"
                 style={{ width: `${answers.score}%` }}
               ></div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-6 mb-8 text-left border border-gray-200">
+          <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-6 mb-8 text-left border border-blue-200 shadow-lg">
             <div className="flex items-start gap-3">
-              <Sparkles className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                <Sparkles className="w-5 h-5 text-white" />
+              </div>
               <div>
                 <h3 className="font-bold text-lg text-gray-900 mb-2">Análise Inicial do Seu Score</h3>
                 <p className="text-base text-gray-700 leading-relaxed">
@@ -316,34 +380,47 @@ export default function Quiz() {
             </div>
           </div>
 
-          <div className="bg-blue-50 rounded-xl p-6 mb-6 border border-blue-200">
-            <h3 className="font-bold text-xl text-gray-900 mb-4">
+          <div className="bg-gradient-to-br from-white to-blue-50 rounded-2xl p-6 mb-6 border-2 border-blue-300 shadow-xl">
+            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-3 py-1 rounded-full text-xs font-semibold mb-4">
+              <Sparkles className="w-3 h-3" />
+              <span>OFERTA EXCLUSIVA</span>
+            </div>
+            
+            <h3 className="font-bold text-2xl text-gray-900 mb-4">
               Desbloqueie o Relatório Completo
             </h3>
             <p className="text-base text-gray-700 mb-4 leading-relaxed">
               Descubra os <strong>pontos críticos</strong> que estão impedindo seu relacionamento de prosperar, 
               receba <strong>5 ações práticas personalizadas</strong> e um plano detalhado para transformar sua relação.
             </p>
-            <ul className="text-left text-sm text-gray-700 mb-6 space-y-2">
-              <li className="flex items-start gap-2">
-                <span className="text-blue-600 font-bold flex-shrink-0">✓</span>
+            <ul className="text-left text-sm text-gray-700 mb-6 space-y-3">
+              <li className="flex items-start gap-3">
+                <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <CheckCircle className="w-4 h-4 text-white" />
+                </div>
                 <span>Análise profunda de cada área do relacionamento</span>
               </li>
-              <li className="flex items-start gap-2">
-                <span className="text-blue-600 font-bold flex-shrink-0">✓</span>
+              <li className="flex items-start gap-3">
+                <div className="w-6 h-6 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <CheckCircle className="w-4 h-4 text-white" />
+                </div>
                 <span>Identificação dos seus pontos fortes e fracos</span>
               </li>
-              <li className="flex items-start gap-2">
-                <span className="text-blue-600 font-bold flex-shrink-0">✓</span>
+              <li className="flex items-start gap-3">
+                <div className="w-6 h-6 bg-gradient-to-br from-pink-500 to-pink-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <CheckCircle className="w-4 h-4 text-white" />
+                </div>
                 <span>5 ações práticas e imediatas para melhorar</span>
               </li>
-              <li className="flex items-start gap-2">
-                <span className="text-blue-600 font-bold flex-shrink-0">✓</span>
+              <li className="flex items-start gap-3">
+                <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <CheckCircle className="w-4 h-4 text-white" />
+                </div>
                 <span>Conselhos personalizados baseados nas suas respostas</span>
               </li>
             </ul>
 
-            <div className="bg-white rounded-lg p-5 mb-6 border border-gray-200">
+            <div className="bg-white rounded-xl p-5 mb-6 border border-gray-200 shadow-md">
               <h4 className="font-bold text-lg text-gray-900 mb-3">💰 INVESTIMENTO & GARANTIA:</h4>
               <p className="text-base text-gray-700 mb-2">
                 <strong>Valor: R$ 57</strong> (ou 2x de R$ 28,50)
@@ -351,7 +428,7 @@ export default function Quiz() {
               <p className="text-base text-gray-700 mb-4">
                 <strong>Formas de pagamento:</strong> Cartão, PIX, Boleto
               </p>
-              <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+              <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 border-2 border-green-300 shadow-sm">
                 <p className="font-bold text-base text-gray-900 mb-2">🛡️ GARANTIA INCONDICIONAL DE 7 DIAS</p>
                 <p className="text-sm text-gray-700">
                   Se em 1 semana você achar que o conteúdo não valeu o investimento, devolvemos 100% do seu dinheiro. Sem perguntas, sem burocracia.
@@ -363,9 +440,12 @@ export default function Quiz() {
               href="https://pay.kiwify.com.br/LnKRt9G"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg py-4 px-8 rounded-lg transition-all duration-300 transform hover:scale-[1.02]"
+              className="inline-block w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold text-lg py-5 px-8 rounded-xl transition-all duration-300 transform hover:scale-[1.02] shadow-xl hover:shadow-2xl group"
             >
-              INVESTIR NO MEU RELACIONAMENTO (R$ 57)
+              <span className="flex items-center justify-center gap-2">
+                INVESTIR NO MEU RELACIONAMENTO (R$ 57)
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </span>
             </a>
             <p className="text-xs text-gray-500 mt-3">
               Acesso imediato • Pagamento 100% seguro
@@ -379,16 +459,16 @@ export default function Quiz() {
   const question = questions[currentQuestion]
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center p-4 sm:p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex items-center justify-center p-4 sm:p-6">
       {showMotivationalMessage && (
-        <div className="fixed top-4 sm:top-8 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg shadow-xl z-50 animate-slide-down max-w-[90%] sm:max-w-md text-center">
+        <div className="fixed top-4 sm:top-8 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl shadow-2xl z-50 animate-slide-down max-w-[90%] sm:max-w-md text-center border border-blue-400">
           <p className="font-semibold text-sm sm:text-base">{motivationalMessage}</p>
         </div>
       )}
-      <div className="max-w-2xl w-full bg-gray-50 rounded-2xl shadow-lg p-6 sm:p-8 md:p-10">
+      <div className="max-w-2xl w-full bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 border border-gray-200">
         
         {/* IMAGEM ACIMA DA PERGUNTA */}
-        <div className="mb-6 rounded-xl overflow-hidden shadow-md">
+        <div className="mb-6 rounded-2xl overflow-hidden shadow-xl">
           <img 
             src={question.image} 
             alt={`Ilustração para: ${question.question}`}
@@ -398,12 +478,12 @@ export default function Quiz() {
 
         <div className="mb-8">
           <div className="flex justify-between items-center mb-6 gap-2">
-            <span className="text-sm font-medium text-gray-600 bg-gray-200 px-4 py-2 rounded-full whitespace-nowrap">
+            <span className="text-sm font-semibold text-gray-700 bg-gradient-to-r from-blue-100 to-purple-100 px-4 py-2 rounded-full whitespace-nowrap border border-blue-200">
               Pergunta {currentQuestion + 1} de {questions.length}
             </span>
-            <div className="w-24 sm:w-32 bg-gray-200 rounded-full h-2 sm:h-3 overflow-hidden">
+            <div className="w-24 sm:w-32 bg-gray-200 rounded-full h-3 overflow-hidden shadow-inner">
               <div 
-                className="bg-blue-600 h-2 sm:h-3 rounded-full transition-all duration-500 ease-out"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 h-3 rounded-full transition-all duration-500 ease-out shadow-lg"
                 style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
               ></div>
             </div>
@@ -416,7 +496,7 @@ export default function Quiz() {
             <select
               value={answers[question.key] || ''}
               onChange={(e) => handleAnswer(question.key, e.target.value)}
-              className="w-full p-4 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-base sm:text-lg bg-white"
+              className="w-full p-4 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-base sm:text-lg bg-white shadow-sm hover:border-blue-400"
             >
               <option value="">Selecione...</option>
               {question.options.map(option => (
@@ -433,11 +513,11 @@ export default function Quiz() {
                 max={question.max}
                 value={answers[question.key] || question.min}
                 onChange={(e) => handleAnswer(question.key, e.target.value)}
-                className="w-full h-2 sm:h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb"
+                className="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb shadow-inner"
               />
               <div className="flex justify-between text-sm text-gray-600 px-2">
                 <span className="font-medium">{question.min}</span>
-                <span className="font-bold text-2xl text-blue-600">
+                <span className="font-bold text-3xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   {answers[question.key] || question.min}
                 </span>
                 <span className="font-medium">{question.max}</span>
@@ -453,7 +533,7 @@ export default function Quiz() {
               value={answers[question.key] || ''}
               onChange={(e) => handleAnswer(question.key, e.target.value)}
               placeholder="Digite o número..."
-              className="w-full p-4 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-base sm:text-lg bg-white"
+              className="w-full p-4 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-base sm:text-lg bg-white shadow-sm hover:border-blue-400"
             />
           )}
 
@@ -462,7 +542,7 @@ export default function Quiz() {
               {question.options.map(option => (
                 <label 
                   key={option} 
-                  className="flex items-center p-4 border-2 border-gray-300 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-all duration-300 cursor-pointer"
+                  className="flex items-center p-4 border-2 border-gray-300 rounded-xl hover:border-blue-400 hover:bg-blue-50 transition-all duration-300 cursor-pointer shadow-sm"
                 >
                   <input
                     type="checkbox"
@@ -491,7 +571,7 @@ export default function Quiz() {
               onChange={(e) => handleAnswer(question.key, e.target.value)}
               placeholder="Digite sua resposta..."
               rows={5}
-              className="w-full p-4 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-base sm:text-lg bg-white resize-none"
+              className="w-full p-4 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-base sm:text-lg bg-white resize-none shadow-sm hover:border-blue-400"
             />
           )}
         </div>
@@ -500,7 +580,7 @@ export default function Quiz() {
           <button
             onClick={prevQuestion}
             disabled={currentQuestion === 0}
-            className="flex items-center gap-2 px-6 py-3 text-base text-gray-700 font-semibold rounded-lg hover:bg-gray-200 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300"
+            className="flex items-center gap-2 px-6 py-3 text-base text-gray-700 font-semibold rounded-xl hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 border border-gray-300"
           >
             <ArrowLeft className="w-5 h-5" />
             <span className="hidden sm:inline">Anterior</span>
@@ -508,10 +588,10 @@ export default function Quiz() {
           <button
             onClick={nextQuestion}
             disabled={!answers[question.key] || (question.type === 'multiselect' && (!answers[question.key] || (answers[question.key] as string[]).length === 0))}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white font-bold py-3 px-8 rounded-lg transition-all duration-300 disabled:cursor-not-allowed transform hover:scale-[1.02] disabled:hover:scale-100 text-base"
+            className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-gray-300 disabled:to-gray-300 text-white font-bold py-3 px-8 rounded-xl transition-all duration-300 disabled:cursor-not-allowed transform hover:scale-[1.02] disabled:hover:scale-100 text-base shadow-lg hover:shadow-xl group"
           >
             <span className="break-words">{currentQuestion === questions.length - 1 ? 'Ver Resultado' : 'Próxima'}</span>
-            <ArrowRight className="w-5 h-5" />
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </button>
         </div>
       </div>
@@ -534,34 +614,34 @@ export default function Quiz() {
 
         .slider-thumb::-webkit-slider-thumb {
           appearance: none;
-          width: 24px;
-          height: 24px;
+          width: 28px;
+          height: 28px;
           border-radius: 50%;
-          background: #2563EB;
+          background: linear-gradient(135deg, #2563EB 0%, #9333EA 100%);
           cursor: pointer;
-          box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+          box-shadow: 0 4px 12px rgba(37, 99, 235, 0.5);
           transition: all 0.3s ease;
         }
 
         .slider-thumb::-webkit-slider-thumb:hover {
           transform: scale(1.2);
-          box-shadow: 0 4px 12px rgba(37, 99, 235, 0.6);
+          box-shadow: 0 6px 16px rgba(37, 99, 235, 0.7);
         }
 
         .slider-thumb::-moz-range-thumb {
-          width: 24px;
-          height: 24px;
+          width: 28px;
+          height: 28px;
           border-radius: 50%;
-          background: #2563EB;
+          background: linear-gradient(135deg, #2563EB 0%, #9333EA 100%);
           cursor: pointer;
           border: none;
-          box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+          box-shadow: 0 4px 12px rgba(37, 99, 235, 0.5);
           transition: all 0.3s ease;
         }
 
         .slider-thumb::-moz-range-thumb:hover {
           transform: scale(1.2);
-          box-shadow: 0 4px 12px rgba(37, 99, 235, 0.6);
+          box-shadow: 0 6px 16px rgba(37, 99, 235, 0.7);
         }
       `}</style>
     </div>
