@@ -636,6 +636,27 @@ export default function Quiz() {
           transition: all 0.3s ease;
         }
 
-        .slider-thumb::-webkit-slider-thumb:hover {
+               .slider-thumb::-webkit-slider-thumb:hover {
           transform: scale(1.2);
-          box-shadow: 0 6px 16px rgba(37, 
+          box-shadow: 0 6px 16px rgba(37, 99, 235, 0.7);
+        }
+
+        .slider-thumb::-moz-range-thumb {
+          width: 28px;
+          height: 28px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #2563EB 0%, #9333EA 100%);
+          cursor: pointer;
+          border: none;
+          box-shadow: 0 4px 12px rgba(37, 99, 235, 0.5);
+          transition: all 0.3s ease;
+        }
+
+        .slider-thumb::-moz-range-thumb:hover {
+          transform: scale(1.2);
+          box-shadow: 0 6px 16px rgba(37, 99, 235, 0.7);
+        }
+      `}</style>
+    </div>
+  )
+}
