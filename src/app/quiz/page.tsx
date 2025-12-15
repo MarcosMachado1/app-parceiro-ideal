@@ -602,7 +602,7 @@ export default function Quiz() {
               className="w-full p-4 border-2 border-purple-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-300 text-base sm:text-lg bg-white shadow-md hover:border-purple-400 font-medium"
             >
               <option value="">Selecione...</option>
-              {question.options.map(option => (
+              {question.options?.map(option => (
                 <option key={option} value={option}>{option}</option>
               ))}
             </select>
@@ -642,7 +642,7 @@ export default function Quiz() {
 
           {question.type === 'multiselect' && (
             <div className="space-y-3">
-              {question.options.map(option => (
+              {question.options?.map(option => (
                 <label 
                   key={option} 
                   className="flex items-center p-4 border-2 border-purple-300 rounded-xl hover:border-purple-500 hover:bg-purple-50 transition-all duration-300 cursor-pointer shadow-md"
