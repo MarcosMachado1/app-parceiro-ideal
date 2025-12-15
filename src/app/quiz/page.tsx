@@ -10,6 +10,12 @@ interface Answers {
   category?: string
 }
 
+declare global {
+  interface Window {
+    fbq: any;
+  }
+}
+
 const questions = [
   {
     id: 1,
